@@ -146,8 +146,8 @@ with tab1:
     else:
         st.warning("⚠️ Not Ideal")
     # -------- QUIZ --------
-    # ---------------- QUIZ + XP SYSTEM ----------------
-   with tab2:
+# ---------------- QUIZ + XP SYSTEM ----------------
+with tab2:
         st.header("🧠 Quiz Zone")
 
         user = st.session_state.current_user
