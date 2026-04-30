@@ -127,7 +127,8 @@ with tab1:
     # =========================
     st.metric("🌟 Stellar Flux", round(flux, 2))
     st.metric("🌡 Temperature (K)", round(temp, 1))
-    st.metric("🪐 Habitability Score", f"{score}/100")
+    st.metric("🪐 Habitability Score", f"{int(score)}/100")
+    score = max(0, min(score, 100))
 
     # =========================
     # 🌍 STATUS MESSAGES
