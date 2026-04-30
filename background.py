@@ -70,72 +70,90 @@ if mode == "🌟 Basic":
     tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
 
     # -------- CREATE PLANET --------
-    with tab1:
-        st.header("🌍 Create Your Planet (Real Physics Mode)")
+    # -------- CREATE PLANET --------
+with tab1:
+    st.header("🌍 Create Your Planet (Real Physics Mode)")
 
-        # Inputs
-        star_type = st.selectbox("Star Type", ["G-Type (Sun-like)", "M-Type (Red Dwarf)"])
-        distance = st.slider("Orbital Distance (AU)", 0.1, 3.0, 1.0)
-        albedo = st.slider("Albedo (Reflectivity)", 0.0, 1.0, 0.3)
+    # Inputs
+    star_type = st.selectbox(
+        "Star Type",
+        ["G-Type (Sun-like)", "M-Type (Red Dwarf)"]
+    )
 
-        # Star luminosity
-        if star_type == "G-Type (Sun-like)":
-            L = 1.0
-        else:
-            L = 0.04  # M dwarf approx
+    distance = st.slider("Orbital Distance (AU)", 0.1, 3.0, 1.0)
+    albedo = st.slider("Albedo (Reflectivity)", 0.0, 1.0, 0.3)
 
-        # --- Physics ---
-        flux = L / (distance ** 2)
+    # Star luminosity
+    if star_type == "G-Type (Sun-like)":
+        L = 1.0
+    else:
+        L = 0.04  # Red dwarf approx
 
-        # equilibrium temperature (scaled to Earth ~278K)
-        temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
+    # --- PHYSICS CALCULATIONS ---
+    flux = L / (distance ** 2)
 
-        # --- IDEAL CONDITIONS (Earth-like) ---
-        ideal_flux = 1.0
-        ideal_temp = 288  # K
-        ideal_albedo = 0.3
+    temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
 
-        # --- SCORING (smooth + difficult) ---
-        flux_score = max(0, 100 - abs(flux - ideal_flux) * 120)
-        temp_score = max(0, 100 - abs(temp - ideal_temp) * 1.2)
-        albedo_score = max(0, 100 - abs(albedo - ideal_albedo) * 300)
+    # --- IDEAL TARGETS (EARTH-LIKE) ---
+    ideal_flux = 1.0
+    ideal_temp = 288
+    ideal_albedo = 0.3
 
-        score = int(0.4 * flux_score + 0.4 * temp_score + 0.2 * albedo_score)
+    # --- BALANCED SCORING (FIXED) ---
+    flux_score = max(0, 100 - abs(flux - ideal_flux) * 90)
+    temp_score = max(0, 100 - abs(temp - ideal_temp) * 0.9)
+    albedo_score = max(0, 100 - abs(albedo - ideal_albedo) * 120)
 
-        # --- DISPLAY ---
-        st.metric("Stellar Flux", round(flux, 2))
-        st.metric("Equilibrium Temp (K)", round(temp, 1))
-        st.metric("Habitability Score", f"{score}/100")
-        st.progress(score)
+    score = int(
+        0.4 * flux_score +
+        0.4 * temp_score +
+        0.2 * albedo_score
+    )
 
-        # --- HABITABILITY STATUS ---
-        if 273 <= temp <= 310:
-            st.success("🌍 Conditions may allow liquid water")
-        elif temp > 320:
-            st.error("🔥 Too hot (Moist Greenhouse risk)")
-        else:
-            st.warning("❄️ Too cold")
+    # --- DISPLAY RESULTS ---
+    st.metric("🌟 Stellar Flux", round(flux, 2))
+    st.metric("🌡 Equilibrium Temp (K)", round(temp, 1))
+    st.metric("🪐 Habitability Score", f"{score}/100")
 
-        # --- PERFECT SCORE REWARD ---
-        if score >= 98:  # NOT easy 100 anymore
-            st.balloons()
-            st.snow()
+    st.progress(score)
 
-            st.markdown("""
-            <div style="
-                background: linear-gradient(135deg, #00c6ff, #0072ff);
-                padding: 25px;
-                border-radius: 15px;
-                text-align: center;
-                color: white;
-                font-size: 24px;
-                font-weight: bold;
-                margin-top: 20px;
-            ">
-                🌟 YOU ARE AMAZING!! 🌟<br>
-                Near-Perfect Planet Created 🌍
-            </div>
-            """, unsafe_allow_html=True)
+    # --- HABITABILITY STATUS ---
+    if 273 <= temp <= 310:
+        st.success("🌍 Stable liquid water conditions possible")
+    elif temp > 320:
+        st.error("🔥 Moist Greenhouse Risk (Too Hot)")
+    elif temp < 200:
+        st.warning("❄️ Frozen world (Too Cold)")
+    else:
+        st.warning("⚠️ Marginal conditions")
+
+    # --- PERFECT SCORE REWARD ---
+    if score >= 95:
+        st.balloons()
+        st.snow()
+
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        ">
+            🌟 YOU ARE AMAZING!! 🌟<br>
+            Near-Perfect Habitable Planet Created 🌍
+        </div>
+        """, unsafe_allow_html=True)
+
+    elif score >= 80:
+        st.info("🪐 Very Earth-like planet detected")
+    elif score >= 60:
+        st.warning("⚠️ Partially habitable planet")
+    else:
+        st.error("❌ Harsh or non-habitable world")
 
 
     # -------- QUIZ --------
