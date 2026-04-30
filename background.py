@@ -129,8 +129,6 @@ with tab1:
     st.metric("🌡 Temperature (K)", round(temp, 1))
     st.metric("🪐 Habitability Score", f"{score}/100")
 
-    st.progress(score)
-
     # =========================
     # 🌍 STATUS MESSAGES
     # =========================
