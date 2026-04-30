@@ -359,45 +359,65 @@ if mode == "🔬 Advanced":
         """, unsafe_allow_html=True)
       
     # -------- TRAPPIST --------
-    with tab2:
-        st.header("🌌 TRAPPIST-1 System")
+   with tab2:
+    st.header("🌌 Exoplanet System Simulator")
 
-        html = "<html><body style='background:black;margin:0;'><style>"
-        html += """
-        .container{position:relative;width:600px;height:600px;margin:auto;}
-        .star{position:absolute;top:50%;left:50%;width:18px;height:18px;background:red;border-radius:50%;
-        transform:translate(-50%,-50%);box-shadow:0 0 30px red;}
-        .orbit-path{position:absolute;top:50%;left:50%;border:1px solid rgba(255,255,255,0.2);
-        border-radius:50%;transform:translate(-50%,-50%);}
-        .orbit{position:absolute;top:50%;left:50%;transform-origin:center;animation:spin linear infinite;}
-        .planet{position:absolute;top:0;left:0;transform:translateX(var(--r));display:flex;}
-        .dot{width:10px;height:10px;border-radius:50%;}
-        .label{color:white;font-size:10px;margin-left:5px;}
-        @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-        """
-        html += "</style><div class='container'><div class='star'></div>"
+    system = st.selectbox(
+        "Choose System",
+        ["TRAPPIST-1", "Kepler-90", "Proxima Centauri"]
+    )
 
+    html = "<html><body style='background:black;margin:0;'><style>"
+    html += """
+    .container{position:relative;width:600px;height:600px;margin:auto;}
+    .star{position:absolute;top:50%;left:50%;width:18px;height:18px;background:red;border-radius:50%;
+    transform:translate(-50%,-50%);box-shadow:0 0 30px red;}
+    .orbit-path{position:absolute;top:50%;left:50%;border:1px solid rgba(255,255,255,0.2);
+    border-radius:50%;transform:translate(-50%,-50%);}
+    .orbit{position:absolute;top:50%;left:50%;transform-origin:center;animation:spin linear infinite;}
+    .planet{position:absolute;top:0;left:0;transform:translateX(var(--r));display:flex;}
+    .dot{width:10px;height:10px;border-radius:50%;}
+    .label{color:white;font-size:10px;margin-left:5px;}
+    @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+    """
+    html += "</style><div class='container'><div class='star'></div>"
+
+    # ================= SYSTEM DATA =================
+
+    if system == "TRAPPIST-1":
         radii = [50, 70, 90, 110, 130, 150, 170]
         speeds = [6, 8, 10, 12, 14, 16, 18]
         colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white"]
-        names = ["TRAPPIST-1b", "TRAPPIST-1c", "TRAPPIST-1d",
-                 "TRAPPIST-1e", "TRAPPIST-1f", "TRAPPIST-1g", "TRAPPIST-1h"]
+        names = ["trappist-1b", "trappist-1c", "trappist-1d", "trappist-1e", "trappist-1f", "trappist-1g", "trappist-1h"]
 
-        for r, s, c, n in zip(radii, speeds, colors, names):
-            html += f"""
-            <div class='orbit-path' style='width:{r*2}px;height:{r*2}px;'></div>
-            <div class='orbit' style='animation-duration:{s}s;'>
-                <div class='planet' style='--r:{r}px;'>
-                    <div class='dot' style='background:{c};'></div>
-                    <div class='label'>{n}</div>
-                </div>
+    elif system == "Kepler-90":
+        radii = [40, 55, 70, 90, 110, 130, 150, 180]
+        speeds = [5, 7, 9, 11, 13, 15, 17, 20]
+        colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white", "purple"]
+        names = ["kepler-90b", "kepler-90c", "kepler-90i", "kepler-90d", "kepler-90e", "kepler-90f", "kepler-90g", "kepler-90h"]
+
+    elif system == "Proxima Centauri":
+        radii = [80, 130]
+        speeds = [10, 16]
+        colors = ["lightblue", "green"]
+        names = ["proxima cen b", "proxima cen d"]
+
+    # ================= RENDER =================
+
+    for r, s, c, n in zip(radii, speeds, colors, names):
+        html += f"""
+        <div class='orbit-path' style='width:{r*2}px;height:{r*2}px;'></div>
+        <div class='orbit' style='animation-duration:{s}s;'>
+            <div class='planet' style='--r:{r}px;'>
+                <div class='dot' style='background:{c};'></div>
+                <div class='label'>{system}-{n}</div>
             </div>
-            """
+        </div>
+        """
 
-        html += "</div></body></html>"
+    html += "</div></body></html>"
 
-        st.components.v1.html(html, height=650)
-
+    st.components.v1.html(html, height=650)
     # -------- CALCULATOR --------
     with tab3:
         st.header("🔥 Habitability Calculator")
