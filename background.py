@@ -147,7 +147,7 @@ with tab1:
         st.warning("⚠️ Not Ideal")
     # -------- QUIZ --------
     # ---------------- QUIZ + XP SYSTEM ----------------
-    with tab2:
+with tab2:
         st.header("🧠 Quiz Zone")
 
         user = st.session_state.current_user
@@ -265,7 +265,7 @@ with tab1:
 
             st.info(f"✨ You earned {xp_gain} XP!")
     # -------- PROGRESS --------
-    with tab3:
+with tab3:
         st.header("🏆 Progress, Level & Badges")
 
         user = st.session_state.current_user
@@ -369,7 +369,7 @@ with tab1:
         """, unsafe_allow_html=True)
 
     # -------- TRAPPIST SIMULATION --------
-    with tab2:
+with tab2:
         st.header("🌌 TRAPPIST-1 System")
 
         html = "<html><body style='background:black;margin:0;'><style>"
@@ -409,7 +409,7 @@ with tab1:
         st.components.v1.html(html, height=650)
 
     # -------- CALCULATOR --------
-    with tab3:
+with tab3:
         st.header("🔥 Habitability Calculator")
 
         star = st.selectbox("Star Type", ["G-Type", "M-Type"])
