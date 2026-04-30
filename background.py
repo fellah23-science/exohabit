@@ -71,7 +71,7 @@ if mode == "🌟 Basic":
 
     # -------- CREATE PLANET --------
     # -------- CREATE PLANET --------
-with tab1:
+ with tab1:
     st.header("🌍 Create Your Planet (Real Physics + Game Mode)")
 
     # Inputs
