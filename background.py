@@ -1,0 +1,425 @@
+import streamlit as st
+import random
+import math
+
+st.set_page_config(page_title="ExoHabit", layout="wide")
+
+# ================= INIT =================
+if "users" not in st.session_state:
+    st.session_state.users = {}
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if "current_user" not in st.session_state:
+    st.session_state.current_user = None
+
+
+# ================= LOGIN =================
+def login_page():
+    st.title("🌌 ExoHabit Login")
+
+    option = st.radio("Choose", ["Login", "Signup"])
+
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+
+    if option == "Signup":
+        if st.button("Create Account"):
+            if username and password:
+                st.session_state.users[username] = {
+                    "password": password,
+                    "xp": 0,
+                    "completed": 0
+                }
+                st.success("Account created!")
+
+    if option == "Login":
+        if st.button("Login"):
+            if username in st.session_state.users and \
+               st.session_state.users[username]["password"] == password:
+
+                st.session_state.logged_in = True
+                st.session_state.current_user = username
+                st.rerun()
+            else:
+                st.error("Invalid login")
+
+
+# ================= HARD GATE (THIS IS THE FIX) =================
+if not st.session_state.logged_in:
+    login_page()
+    st.stop()
+
+
+# ================= SAFE USER =================
+user = st.session_state.current_user
+if user not in st.session_state.users:
+    st.session_state.logged_in = False
+    st.rerun()
+
+user_data = st.session_state.users[user]
+
+mode = st.sidebar.radio("Mode", ["🌟 Basic", "🔬 Advanced"])
+
+# =====================================================
+# 🌟 BASIC MODE
+# =====================================================
+if mode == "🌟 Basic":
+
+    tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
+
+    # -------- CREATE PLANET --------
+    with tab1:
+        st.header("🌍 Create Your Planet (Real Physics Mode)")
+
+        # Inputs
+        star_type = st.selectbox("Star Type", ["G-Type (Sun-like)", "M-Type (Red Dwarf)"])
+        distance = st.slider("Orbital Distance (AU)", 0.1, 3.0, 1.0)
+        albedo = st.slider("Albedo (Reflectivity)", 0.0, 1.0, 0.3)
+
+        # Star luminosity
+        if star_type == "G-Type (Sun-like)":
+            L = 1.0
+        else:
+            L = 0.04  # M dwarf approx
+
+        # --- Physics ---
+        flux = L / (distance ** 2)
+
+        # equilibrium temperature (scaled to Earth ~278K)
+        temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
+
+        # --- IDEAL CONDITIONS (Earth-like) ---
+        ideal_flux = 1.0
+        ideal_temp = 288  # K
+        ideal_albedo = 0.3
+
+        # --- SCORING (smooth + difficult) ---
+        flux_score = max(0, 100 - abs(flux - ideal_flux) * 120)
+        temp_score = max(0, 100 - abs(temp - ideal_temp) * 1.2)
+        albedo_score = max(0, 100 - abs(albedo - ideal_albedo) * 300)
+
+        score = int(0.4 * flux_score + 0.4 * temp_score + 0.2 * albedo_score)
+
+        # --- DISPLAY ---
+        st.metric("Stellar Flux", round(flux, 2))
+        st.metric("Equilibrium Temp (K)", round(temp, 1))
+        st.metric("Habitability Score", f"{score}/100")
+        st.progress(score)
+
+        # --- HABITABILITY STATUS ---
+        if 273 <= temp <= 310:
+            st.success("🌍 Conditions may allow liquid water")
+        elif temp > 320:
+            st.error("🔥 Too hot (Moist Greenhouse risk)")
+        else:
+            st.warning("❄️ Too cold")
+
+        # --- PERFECT SCORE REWARD ---
+        if score >= 98:  # NOT easy 100 anymore
+            st.balloons()
+            st.snow()
+
+            st.markdown("""
+            <div style="
+                background: linear-gradient(135deg, #00c6ff, #0072ff);
+                padding: 25px;
+                border-radius: 15px;
+                text-align: center;
+                color: white;
+                font-size: 24px;
+                font-weight: bold;
+                margin-top: 20px;
+            ">
+                🌟 YOU ARE AMAZING!! 🌟<br>
+                Near-Perfect Planet Created 🌍
+            </div>
+            """, unsafe_allow_html=True)
+
+
+    # -------- QUIZ --------
+    # ---------------- QUIZ + XP SYSTEM ----------------
+    with tab2:
+        st.header("🧠 Quiz Zone")
+
+        user = st.session_state.current_user
+
+        # Initialize XP + progress
+        if "xp" not in st.session_state.users[user]:
+            st.session_state.users[user]["xp"] = 0
+            st.session_state.users[user]["completed"] = 0
+
+        quiz_data = {
+
+            "Quiz 1": [
+                ("Which planet is closest to the Sun?", ["Mercury", "Venus", "Earth", "Mars"], "Mercury"),
+                ("Which is the hottest planet?", ["Earth", "Venus", "Mercury", "Mars"], "Venus"),
+                ("What is the Red Planet?", ["Mars", "Jupiter", "Earth", "Venus"], "Mars"),
+                ("Largest planet?", ["Earth", "Saturn", "Jupiter", "Mars"], "Jupiter"),
+                ("Which planet has rings?", ["Mars", "Earth", "Saturn", "Venus"], "Saturn")
+            ],
+
+            "Quiz 2": [
+                ("What powers stars?", ["Fusion", "Fission", "Electricity", "Gravity"], "Fusion"),
+                ("Our galaxy name?", ["Milky Way", "Andromeda", "Orion", "Pegasus"], "Milky Way"),
+                ("Moon is a?", ["Planet", "Star", "Satellite", "Comet"], "Satellite"),
+                ("Orbit means?", ["Path", "Speed", "Mass", "Energy"], "Path"),
+                ("Comets are mostly?", ["Ice", "Rock", "Metal", "Gas"], "Ice")
+            ],
+
+            "Quiz 3": [
+                ("Exoplanet means?", ["Outside solar system", "Inside system", "Moon", "Star"], "Outside solar system"),
+                ("Albedo measures?", ["Reflectivity", "Heat", "Mass", "Speed"], "Reflectivity"),
+                ("Habitable zone allows?", ["Liquid water", "Gas", "Ice", "Metal"], "Liquid water"),
+                ("Temperature unit?", ["Kelvin", "Meter", "Second", "Joule"], "Kelvin"),
+                ("Flux means?", ["Energy received", "Mass", "Speed", "Distance"], "Energy received")
+            ],
+
+            "Quiz 4": [
+                ("Sun type?", ["G-type", "M-type", "K-type", "O-type"], "G-type"),
+                ("Closest star?", ["Proxima Centauri", "Sirius", "Vega", "Betelgeuse"], "Proxima Centauri"),
+                ("Speed of light?", ["3e8 m/s", "1e6", "1e3", "1e2"], "3e8 m/s"),
+                ("Orbit shape?", ["Ellipse", "Square", "Triangle", "Line"], "Ellipse"),
+                ("Mars color?", ["Red", "Blue", "Green", "White"], "Red")
+            ],
+
+            "Quiz 5": [
+                ("TRAPPIST-1 has how many planets?", ["7", "5", "9", "3"], "7"),
+                ("Red dwarfs are?", ["Small stars", "Planets", "Gas clouds", "Moons"], "Small stars"),
+                ("Life needs?", ["Water", "Metal", "Dust", "Gas"], "Water"),
+                ("Earth avg temp?", ["288K", "100K", "500K", "50K"], "288K"),
+                ("Sun age?", ["4.6 billion years", "1 billion", "10 billion", "100 million"], "4.6 billion years")
+            ],
+
+            "Quiz 6": [
+                ("Jupiter type?", ["Gas giant", "Rocky", "Ice", "Metal"], "Gas giant"),
+                ("Saturn has?", ["Rings", "Moons only", "No rings", "No gravity"], "Rings"),
+                ("Neptune winds?", ["Fast", "Slow", "None", "Calm"], "Fast"),
+                ("Mercury moons?", ["0", "1", "2", "3"], "0"),
+                ("Venus rotation?", ["Slow", "Fast", "Normal", "None"], "Slow")
+            ],
+
+            "Quiz 7": [
+                ("Black hole is?", ["Gravity trap", "Light", "Energy", "Gas"], "Gravity trap"),
+                ("Supernova?", ["Explosion", "Cooling", "Orbit", "Fusion"], "Explosion"),
+                ("Nebula?", ["Gas cloud", "Planet", "Star", "Rock"], "Gas cloud"),
+                ("Galaxy shape?", ["Spiral", "Square", "Flat", "Triangle"], "Spiral"),
+                ("Dark matter?", ["Invisible", "Visible", "Solid", "Liquid"], "Invisible")
+            ],
+
+            "Quiz 8": [
+                ("ISS is?", ["Space station", "Planet", "Star", "Rocket"], "Space station"),
+                ("Hubble is?", ["Telescope", "Planet", "Rocket", "Satellite"], "Telescope"),
+                ("JWST observes?", ["Infrared", "Radio", "X-ray", "UV"], "Infrared"),
+                ("Rocket fuel?", ["Chemical", "Water", "Air", "Electric"], "Chemical"),
+                ("Escape velocity?", ["Minimum speed", "Mass", "Force", "Energy"], "Minimum speed")
+            ],
+
+            "Quiz 9": [
+                ("Orbit shape?", ["Ellipse", "Circle only", "Square", "Line"], "Ellipse"),
+                ("Gravity is?", ["Force", "Light", "Energy", "Wave"], "Force"),
+                ("Mass unit?", ["kg", "m", "s", "J"], "kg"),
+                ("Distance unit?", ["AU", "kg", "s", "W"], "AU"),
+                ("Time unit?", ["Second", "Meter", "AU", "kg"], "Second")
+            ],
+
+            "Quiz 10": [
+                ("Life requires?", ["Water", "Iron", "Dust", "Gas"], "Water"),
+                ("Gold formed in?", ["Supernova", "Earth", "Moon", "Sun"], "Supernova"),
+                ("Hot stars color?", ["Blue", "Red", "Yellow", "White"], "Blue"),
+                ("Cool stars?", ["Red", "Blue", "White", "Yellow"], "Red"),
+                ("Universe expanding?", ["Yes", "No", "Maybe", "Unknown"], "Yes")
+            ]
+        }
+
+        choice = st.selectbox("Choose Quiz", list(quiz_data.keys()))
+        qset = quiz_data[choice]
+
+        answers = []
+        for i, (q, opt, ans) in enumerate(qset):
+            answers.append(st.radio(q, opt, key=f"{choice}_{i}"))
+
+        if st.button("Submit Quiz"):
+            score = 0
+            for i, (q, opt, ans) in enumerate(qset):
+                if answers[i] == ans:
+                    score += 1
+
+            st.success(f"Score: {score}/5")
+
+            # XP SYSTEM
+            xp_gain = score * 10
+            st.session_state.users[user]["xp"] += xp_gain
+
+            if score >= 3:
+                st.session_state.users[user]["completed"] += 1
+                st.balloons()
+
+            st.info(f"✨ You earned {xp_gain} XP!")
+    # -------- PROGRESS --------
+    with tab3:
+        st.header("🏆 Progress, Level & Badges")
+
+        user = st.session_state.current_user
+        data = st.session_state.users[user]
+
+        xp = data.get("xp", 0)
+        completed = data.get("completed", 0)
+
+        # LEVEL FORMULA
+        level = xp // 100 + 1
+
+        st.metric("Level", level)
+        st.metric("XP", xp)
+        st.metric("Quizzes Completed", completed)
+
+        st.progress((xp % 100) / 100)
+
+        # BADGES
+        if completed >= 10:
+            st.success("🥇 Exoplanet Master")
+        elif completed >= 7:
+            st.info("🥈 Astronomer")
+        elif completed >= 5:
+            st.warning("🥉 Explorer")
+        else:
+            st.write("Keep going!")
+
+        # LEVEL TITLES (ADDICTIVE)
+        if level >= 10:
+            st.write("🌌 Galactic Legend")
+        elif level >= 7:
+            st.write("🚀 Space Commander")
+        elif level >= 4:
+            st.write("🛰️ Explorer")
+        else:
+            st.write("🌍 Beginner")
+    with tab4:
+        st.header("🥇 Leaderboard")
+
+        # ALWAYS SAFE ACCESS
+        leaderboard = st.session_state.get("leaderboard", {})
+
+        if len(leaderboard) == 0:
+            st.info("No players yet. Start playing quizzes to appear here!")
+        else:
+            # sort by XP (highest first)
+            sorted_lb = sorted(
+                leaderboard.items(),
+                key=lambda x: x[1],
+                reverse=True
+            )
+
+            st.subheader("🌌 Top Explorers")
+
+            for i, (user, xp) in enumerate(sorted_lb[:10]):
+                if i == 0:
+                    st.success(f"🥇 {user} — {xp} XP")
+                elif i == 1:
+                    st.info(f"🥈 {user} — {xp} XP")
+                elif i == 2:
+                    st.warning(f"🥉 {user} — {xp} XP")
+                else:
+                    st.write(f"{i + 1}. {user} — {xp} XP")
+# =====================================================
+# 🔬 ADVANCED MODE
+# =====================================================
+if mode == "🔬 Advanced":
+
+    tab1, tab2, tab3 = st.tabs(["🪐 Planet Cards", "🌌 TRAPPIST System", "🔥 Calculator"])
+
+    # -------- PLANET CARDS --------
+    with tab1:
+        planets = [
+            {"name": "Kepler-22b", "temp": 262, "type": "Ocean world"},
+            {"name": "Proxima Centauri b", "temp": 234, "type": "Rocky"},
+            {"name": "TRAPPIST-1e", "temp": 251, "type": "Habitable"},
+            {"name": "Kepler-452b", "temp": 265, "type": "Earth-like"},
+            {"name": "K2-18b", "temp": 265, "type": "Hycean"}
+        ]
+
+        index = st.session_state.get("index", 0)
+
+        col1, col2, col3 = st.columns([1, 2, 1])
+
+        if col1.button("⬅️"):
+            index -= 1
+        if col3.button("➡️"):
+            index += 1
+
+        index = index % len(planets)
+        st.session_state.index = index
+
+        p = planets[index]
+
+        st.markdown(f"""
+        <div style="border:1px solid #ccc;padding:20px;border-radius:12px;">
+        <h2>{p['name']}</h2>
+        <p>🌡 Temperature: {p['temp']} K</p>
+        <p>🪐 Type: {p['type']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # -------- TRAPPIST SIMULATION --------
+    with tab2:
+        st.header("🌌 TRAPPIST-1 System")
+
+        html = "<html><body style='background:black;margin:0;'><style>"
+        html += """
+        .container{position:relative;width:600px;height:600px;margin:auto;}
+        .star{position:absolute;top:50%;left:50%;width:18px;height:18px;background:red;border-radius:50%;
+        transform:translate(-50%,-50%);box-shadow:0 0 30px red;}
+        .orbit-path{position:absolute;top:50%;left:50%;border:1px solid rgba(255,255,255,0.2);
+        border-radius:50%;transform:translate(-50%,-50%);}
+        .orbit{position:absolute;top:50%;left:50%;transform-origin:center;animation:spin linear infinite;}
+        .planet{position:absolute;top:0;left:0;transform:translateX(var(--r));display:flex;}
+        .dot{width:10px;height:10px;border-radius:50%;}
+        .label{color:white;font-size:10px;margin-left:5px;}
+        @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+        """
+        html += "</style><div class='container'><div class='star'></div>"
+
+        radii = [50, 70, 90, 110, 130, 150, 170]
+        speeds = [6, 8, 10, 12, 14, 16, 18]
+        colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white"]
+        names = ["TRAPPIST-1b", "TRAPPIST-1c", "TRAPPIST-1d",
+                 "TRAPPIST-1e", "TRAPPIST-1f", "TRAPPIST-1g", "TRAPPIST-1h"]
+
+        for r, s, c, n in zip(radii, speeds, colors, names):
+            html += f"""
+            <div class='orbit-path' style='width:{r*2}px;height:{r*2}px;'></div>
+            <div class='orbit' style='animation-duration:{s}s;'>
+                <div class='planet' style='--r:{r}px;'>
+                    <div class='dot' style='background:{c};'></div>
+                    <div class='label'>{n}</div>
+                </div>
+            </div>
+            """
+
+        html += "</div></body></html>"
+
+        st.components.v1.html(html, height=650)
+
+    # -------- CALCULATOR --------
+    with tab3:
+        st.header("🔥 Habitability Calculator")
+
+        star = st.selectbox("Star Type", ["G-Type", "M-Type"])
+        d = st.slider("Distance (AU)", 0.1, 5.0, 1.0)
+        a = st.slider("Albedo", 0.0, 1.0, 0.3)
+
+        L = 1 if star == "G-Type" else 0.04
+        flux = L / (d ** 2)
+        temp = ((flux * (1 - a)) / 4) ** 0.25 * 278
+
+        st.write("Stellar Flux:", round(flux, 2))
+        st.write("Equilibrium Temp:", round(temp, 1))
+
+        if temp > 320:
+            st.error("🔥 Moist Greenhouse")
+        elif 273 <= temp <= 310:
+            st.success("🌍 Habitable")
+        else:
+            st.warning("❄️ Not ideal")
+
