@@ -72,7 +72,7 @@ if mode == "🌟 Basic":
     # -------- CREATE PLANET --------
     # -------- CREATE PLANET --------
 with tab1:
-    st.header("🌍 Create Your Planet (Real Physics Mode)")
+    st.header("🌍 Create Your Planet (Real Physics + Game Mode)")
 
     # Inputs
     star_type = st.selectbox(
@@ -84,77 +84,71 @@ with tab1:
     albedo = st.slider("Albedo (Reflectivity)", 0.0, 1.0, 0.3)
 
     # Star luminosity
-    if star_type == "G-Type (Sun-like)":
-        L = 1.0
-    else:
-        L = 0.04  # Red dwarf approx
+    L = 1.0 if star_type == "G-Type (Sun-like)" else 0.04
 
-    # --- PHYSICS CALCULATIONS ---
+    # =========================
+    # 🌡 PHYSICS CALCULATIONS
+    # =========================
     flux = L / (distance ** 2)
-
     temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
 
-    # --- IDEAL TARGETS (EARTH-LIKE) ---
-    ideal_flux = 1.0
-    ideal_temp = 288
-    ideal_albedo = 0.3
+    # =========================
+    # 🌍 EARTH REFERENCE SYSTEM
+    # =========================
+    earth_distance = 1.0
+    earth_albedo = 0.30
 
-    # --- BALANCED SCORING (FIXED) ---
-    flux_score = max(0, 100 - abs(flux - ideal_flux) * 90)
-    temp_score = max(0, 100 - abs(temp - ideal_temp) * 0.9)
-    albedo_score = max(0, 100 - abs(albedo - ideal_albedo) * 120)
+    distance_similarity = max(0, 1 - abs(distance - earth_distance) / 1.5)
+    albedo_similarity = max(0, 1 - abs(albedo - earth_albedo) / 0.5)
 
+    temp_score = max(0, 1 - abs(temp - 288) / 80)
+
+    # =========================
+    # 🪐 FINAL SCORE (SMOOTH)
+    # =========================
     score = int(
-        0.4 * flux_score +
-        0.4 * temp_score +
-        0.2 * albedo_score
+        (distance_similarity * 40 +
+         albedo_similarity * 30 +
+         temp_score * 30) * 100
     )
 
-    # --- DISPLAY RESULTS ---
+    # =========================
+    # 🔓 EARTH / NEAR EARTH LOGIC
+    # =========================
+    is_earth = distance_similarity > 0.95 and albedo_similarity > 0.95
+    near_earth = distance_similarity > 0.75 and albedo_similarity > 0.70
+
+    # Force perfect score for Earth
+    if is_earth:
+        score = 100
+
+    # =========================
+    # 📊 DISPLAY OUTPUT
+    # =========================
     st.metric("🌟 Stellar Flux", round(flux, 2))
-    st.metric("🌡 Equilibrium Temp (K)", round(temp, 1))
+    st.metric("🌡 Temperature (K)", round(temp, 1))
     st.metric("🪐 Habitability Score", f"{score}/100")
 
     st.progress(score)
 
-    # --- HABITABILITY STATUS ---
-    if 273 <= temp <= 310:
-        st.success("🌍 Stable liquid water conditions possible")
-    elif temp > 320:
-        st.error("🔥 Moist Greenhouse Risk (Too Hot)")
-    elif temp < 200:
-        st.warning("❄️ Frozen world (Too Cold)")
-    else:
-        st.warning("⚠️ Marginal conditions")
-
-    # --- PERFECT SCORE REWARD ---
-    if score >= 95:
+    # =========================
+    # 🌍 STATUS MESSAGES
+    # =========================
+    if is_earth:
+        st.success("🌍 EARTH UNLOCKED!")
         st.balloons()
-        st.snow()
 
-        st.markdown("""
-        <div style="
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 20px;
-        ">
-            🌟 YOU ARE AMAZING!! 🌟<br>
-            Near-Perfect Habitable Planet Created 🌍
-        </div>
-        """, unsafe_allow_html=True)
+    elif near_earth:
+        st.info("🪐 Near Habitable Planet Unlocked!")
 
-    elif score >= 80:
-        st.info("🪐 Very Earth-like planet detected")
-    elif score >= 60:
-        st.warning("⚠️ Partially habitable planet")
+    elif temp > 320:
+        st.error("🔥 Moist Greenhouse Risk")
+
+    elif temp < 200:
+        st.warning("❄️ Frozen World")
+
     else:
-        st.error("❌ Harsh or non-habitable world")
-
+        st.warning("⚠️ Marginal Habitability")
 
     # -------- QUIZ --------
     # ---------------- QUIZ + XP SYSTEM ----------------
