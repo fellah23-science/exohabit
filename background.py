@@ -70,9 +70,9 @@ if mode == "🌟 Basic":
     tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
 
     # -------- CREATE PLANET --------
-    # -------- CREATE PLANET -------- 
+  # -------- CREATE PLANET --------
 with tab1:
-    st.header("🌍 Create Your Planet (Real Physics + Game Mode)")
+    st.header("🌍 Create Your Planet (Fixed System)")
 
     # Inputs
     star_type = st.selectbox(
@@ -87,68 +87,64 @@ with tab1:
     L = 1.0 if star_type == "G-Type (Sun-like)" else 0.04
 
     # =========================
-    # 🌡 PHYSICS CALCULATIONS
+    # 🌡 PHYSICS
     # =========================
     flux = L / (distance ** 2)
     temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
 
     # =========================
-    # 🌍 EARTH REFERENCE SYSTEM
+    # 🎯 SCORING (FIXED PROPERLY)
     # =========================
-    earth_distance = 1.0
-    earth_albedo = 0.30
+    # similarity values between 0 and 1
+    distance_sim = max(0, 1 - abs(distance - 1.0) / 1.5)
+    albedo_sim = max(0, 1 - abs(albedo - 0.30) / 0.5)
+    temp_sim = max(0, 1 - abs(temp - 288) / 100)
 
-    distance_similarity = max(0, 1 - abs(distance - earth_distance) / 1.5)
-    albedo_similarity = max(0, 1 - abs(albedo - earth_albedo) / 0.5)
-
-    temp_score = max(0, 1 - abs(temp - 288) / 80)
-
-    # =========================
-    # 🪐 FINAL SCORE (SMOOTH)
-    # =========================
-    score = int(
-        (distance_similarity * 40 +
-         albedo_similarity * 30 +
-         temp_score * 30) * 100
+    # weighted score (DO NOT multiply again)
+    score = (
+        distance_sim * 40 +
+        albedo_sim * 30 +
+        temp_sim * 30
     )
 
-    # =========================
-    # 🔓 EARTH / NEAR EARTH LOGIC
-    # =========================
-    is_earth = distance_similarity > 0.95 and albedo_similarity > 0.95
-    near_earth = distance_similarity > 0.75 and albedo_similarity > 0.70
+    # FINAL SAFE SCORE (THIS FIXES YOUR BUG)
+    score = int(max(0, min(score, 100)))
 
-    # Force perfect score for Earth
+    # =========================
+    # 🌍 EARTH + NEAR EARTH
+    # =========================
+    is_earth = (abs(distance - 1.0) < 0.05 and abs(albedo - 0.30) < 0.02)
+
     if is_earth:
         score = 100
 
     # =========================
-    # 📊 DISPLAY OUTPUT
+    # 📊 DISPLAY
     # =========================
     st.metric("🌟 Stellar Flux", round(flux, 2))
     st.metric("🌡 Temperature (K)", round(temp, 1))
-    st.metric("🪐 Habitability Score", f"{int(score)}/100")
-    score = max(0, min(score, 100))
+    st.metric("🪐 Habitability Score", f"{score}/100")
+
+    st.progress(score)
 
     # =========================
-    # 🌍 STATUS MESSAGES
+    # 🌍 STATUS
     # =========================
-    if is_earth:
+    if score == 100:
         st.success("🌍 EARTH UNLOCKED!")
         st.balloons()
 
-    elif near_earth:
+    elif score >= 80:
         st.info("🪐 Near Habitable Planet Unlocked!")
 
     elif temp > 320:
-        st.error("🔥 Moist Greenhouse Risk")
+        st.error("🔥 Too Hot")
 
     elif temp < 200:
-        st.warning("❄️ Frozen World")
+        st.warning("❄️ Too Cold")
 
     else:
-        st.warning("⚠️ Marginal Habitability")
-
+        st.warning("⚠️ Not Ideal")
     # -------- QUIZ --------
     # ---------------- QUIZ + XP SYSTEM ----------------
     with tab2:
