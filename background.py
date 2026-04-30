@@ -302,7 +302,7 @@ with tab3:
             st.write("🛰️ Explorer")
         else:
             st.write("🌍 Beginner")
-    with tab4:
+with tab4:
         st.header("🥇 Leaderboard")
 
         # ALWAYS SAFE ACCESS
