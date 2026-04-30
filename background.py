@@ -388,13 +388,13 @@ with tab2:
         radii = [50, 70, 90, 110, 130, 150, 170]
         speeds = [6, 8, 10, 12, 14, 16, 18]
         colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white"]
-        names = ["trappist-1b", "trappist-1c", "trappist-1d", "trappist-1e", "trappist-1f", "trappist-1g", "trappist-1h"]
+        names = ["b", "c", "d", "e", "f", "g", "h"]
 
     elif system == "Kepler-90":
         radii = [40, 55, 70, 90, 110, 130, 150, 180]
         speeds = [5, 7, 9, 11, 13, 15, 17, 20]
         colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white", "purple"]
-        names = ["kepler-90b", "kepler-90c", "kepler-90i", "kepler-90d", "kepler-90e", "kepler-90f", "kepler-90g", "kepler-90h"]
+        names = ["b", "c", "i", "d", "e", "f", "g", "h"]
 
     elif system == "Proxima Centauri":
         radii = [80, 130]
