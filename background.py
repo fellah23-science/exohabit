@@ -264,8 +264,8 @@ with tab2:
                 st.balloons()
 
             st.info(f"✨ You earned {xp_gain} XP!")
-    # -------- PROGRESS --------
-  with tab3:
+# -------- PROGRESS --------
+with tab3:
         st.header("🏆 Progress, Level & Badges")
 
         user = st.session_state.current_user
@@ -302,7 +302,7 @@ with tab2:
             st.write("🛰️ Explorer")
         else:
             st.write("🌍 Beginner")
-   with tab4:
+with tab4:
         st.header("🥇 Leaderboard")
 
         # ALWAYS SAFE ACCESS
