@@ -46,7 +46,7 @@ def login_page():
                 st.error("Invalid login")
 
 
-# ================= HARD GATE (THIS IS THE FIX) =================
+# ================= HARD GATE =================
 if not st.session_state.logged_in:
     login_page()
     st.stop()
@@ -69,89 +69,68 @@ if mode == "🌟 Basic":
 
     tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
 
- # -------- CREATE PLANET --------
-  with tab1:
-    st.header("🌍 Create Your Planet (Fixed System)")
+    # -------- CREATE PLANET --------
+    with tab1:
+        st.header("🌍 Create Your Planet (Fixed System)")
 
-    # Inputs
-    star_type = st.selectbox(
-        "Star Type",
-        ["G-Type (Sun-like)", "M-Type (Red Dwarf)"]
-    )
+        star_type = st.selectbox(
+            "Star Type",
+            ["G-Type (Sun-like)", "M-Type (Red Dwarf)"]
+        )
 
-    distance = st.slider("Orbital Distance (AU)", 0.1, 3.0, 1.0)
-    albedo = st.slider("Albedo (Reflectivity)", 0.0, 1.0, 0.3)
+        distance = st.slider("Orbital Distance (AU)", 0.1, 3.0, 1.0)
+        albedo = st.slider("Albedo (Reflectivity)", 0.0, 1.0, 0.3)
 
-    # Star luminosity
-    L = 1.0 if star_type == "G-Type (Sun-like)" else 0.04
+        L = 1.0 if star_type == "G-Type (Sun-like)" else 0.04
 
-    # =========================
-    # 🌡 PHYSICS
-    # =========================
-    flux = L / (distance ** 2)
-    temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
+        flux = L / (distance ** 2)
+        temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
 
-    # =========================
-    # 🎯 SCORING (FIXED PROPERLY)
-    # =========================
-    # similarity values between 0 and 1
-    distance_sim = max(0, 1 - abs(distance - 1.0) / 1.5)
-    albedo_sim = max(0, 1 - abs(albedo - 0.30) / 0.5)
-    temp_sim = max(0, 1 - abs(temp - 288) / 100)
+        distance_sim = max(0, 1 - abs(distance - 1.0) / 1.5)
+        albedo_sim = max(0, 1 - abs(albedo - 0.30) / 0.5)
+        temp_sim = max(0, 1 - abs(temp - 288) / 100)
 
-    # weighted score (DO NOT multiply again)
-    score = (
-        distance_sim * 40 +
-        albedo_sim * 30 +
-        temp_sim * 30
-    )
+        score = (
+            distance_sim * 40 +
+            albedo_sim * 30 +
+            temp_sim * 30
+        )
 
-    # FINAL SAFE SCORE (THIS FIXES YOUR BUG)
-    score = int(max(0, min(score, 100)))
+        score = int(max(0, min(score, 100)))
 
-    # =========================
-    # 🌍 EARTH + NEAR EARTH
-    # =========================
-    is_earth = (abs(distance - 1.0) < 0.05 and abs(albedo - 0.30) < 0.02)
+        is_earth = (abs(distance - 1.0) < 0.05 and abs(albedo - 0.30) < 0.02)
 
-    if is_earth:
-        score = 100
+        if is_earth:
+            score = 100
 
-    # =========================
-    # 📊 DISPLAY
-    # =========================
-    st.metric("🌟 Stellar Flux", round(flux, 2))
-    st.metric("🌡 Temperature (K)", round(temp, 1))
-    st.metric("🪐 Habitability Score", f"{score}/100")
+        st.metric("🌟 Stellar Flux", round(flux, 2))
+        st.metric("🌡 Temperature (K)", round(temp, 1))
+        st.metric("🪐 Habitability Score", f"{score}/100")
 
-    st.progress(score)
+        st.progress(score)
 
-    # =========================
-    # 🌍 STATUS
-    # =========================
-    if score == 100:
-        st.success("🌍 EARTH UNLOCKED!")
-        st.balloons()
+        if score == 100:
+            st.success("🌍 EARTH UNLOCKED!")
+            st.balloons()
 
-    elif score >= 80:
-        st.info("🪐 Near Habitable Planet Unlocked!")
+        elif score >= 80:
+            st.info("🪐 Near Habitable Planet Unlocked!")
 
-    elif temp > 320:
-        st.error("🔥 Too Hot")
+        elif temp > 320:
+            st.error("🔥 Too Hot")
 
-    elif temp < 200:
-        st.warning("❄️ Too Cold")
+        elif temp < 200:
+            st.warning("❄️ Too Cold")
 
-    else:
-        st.warning("⚠️ Not Ideal")
+        else:
+            st.warning("⚠️ Not Ideal")
+
     # -------- QUIZ --------
-# ---------------- QUIZ + XP SYSTEM ----------------
-with tab2:
+    with tab2:
         st.header("🧠 Quiz Zone")
 
         user = st.session_state.current_user
 
-        # Initialize XP + progress
         if "xp" not in st.session_state.users[user]:
             st.session_state.users[user]["xp"] = 0
             st.session_state.users[user]["completed"] = 0
@@ -254,7 +233,6 @@ with tab2:
 
             st.success(f"Score: {score}/5")
 
-            # XP SYSTEM
             xp_gain = score * 10
             st.session_state.users[user]["xp"] += xp_gain
 
@@ -263,17 +241,16 @@ with tab2:
                 st.balloons()
 
             st.info(f"✨ You earned {xp_gain} XP!")
-# -------- PROGRESS --------
-with tab3:
+
+    # -------- PROGRESS --------
+    with tab3:
         st.header("🏆 Progress, Level & Badges")
 
-        user = st.session_state.current_user
         data = st.session_state.users[user]
 
         xp = data.get("xp", 0)
         completed = data.get("completed", 0)
 
-        # LEVEL FORMULA
         level = xp // 100 + 1
 
         st.metric("Level", level)
@@ -282,7 +259,6 @@ with tab3:
 
         st.progress((xp % 100) / 100)
 
-        # BADGES
         if completed >= 10:
             st.success("🥇 Exoplanet Master")
         elif completed >= 7:
@@ -292,7 +268,6 @@ with tab3:
         else:
             st.write("Keep going!")
 
-        # LEVEL TITLES (ADDICTIVE)
         if level >= 10:
             st.write("🌌 Galactic Legend")
         elif level >= 7:
@@ -301,16 +276,16 @@ with tab3:
             st.write("🛰️ Explorer")
         else:
             st.write("🌍 Beginner")
-with tab4:
+
+    # -------- LEADERBOARD --------
+    with tab4:
         st.header("🥇 Leaderboard")
 
-        # ALWAYS SAFE ACCESS
         leaderboard = st.session_state.get("leaderboard", {})
 
         if len(leaderboard) == 0:
             st.info("No players yet. Start playing quizzes to appear here!")
         else:
-            # sort by XP (highest first)
             sorted_lb = sorted(
                 leaderboard.items(),
                 key=lambda x: x[1],
@@ -328,6 +303,7 @@ with tab4:
                     st.warning(f"🥉 {user} — {xp} XP")
                 else:
                     st.write(f"{i + 1}. {user} — {xp} XP")
+
 # =====================================================
 # 🔬 ADVANCED MODE
 # =====================================================
@@ -335,8 +311,8 @@ if mode == "🔬 Advanced":
 
     tab1, tab2, tab3 = st.tabs(["🪐 Planet Cards", "🌌 TRAPPIST System", "🔥 Calculator"])
 
-# -------- PLANET CARDS -------- 
-with tab1:
+    # -------- PLANET CARDS --------
+    with tab1:
         planets = [
             {"name": "Kepler-22b", "temp": 262, "type": "Ocean world"},
             {"name": "Proxima Centauri b", "temp": 234, "type": "Rocky"},
@@ -367,9 +343,9 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-# -------- TRAPPIST SIMULATION --------
-with tab2:
-        st.header("🌌 TRAPPIST-1 System")
+    # -------- TRAPPIST --------
+    with tab2:
+        st.write st.header("🌌 TRAPPIST-1 System")
 
         html = "<html><body style='background:black;margin:0;'><style>"
         html += """
@@ -407,8 +383,8 @@ with tab2:
 
         st.components.v1.html(html, height=650)
 
-# -------- CALCULATOR --------
-with tab3:
+    # -------- CALCULATOR --------
+    with tab3:
         st.header("🔥 Habitability Calculator")
 
         star = st.selectbox("Star Type", ["G-Type", "M-Type"])
@@ -429,3 +405,6 @@ with tab3:
         else:
             st.warning("❄️ Not ideal")
 
+
+
+   
