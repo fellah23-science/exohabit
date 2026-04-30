@@ -319,8 +319,23 @@ if mode == "🔬 Advanced":
             {"name": "TRAPPIST-1e", "temp": 251, "type": "Habitable"},
             {"name": "Kepler-452b", "temp": 265, "type": "Earth-like"},
             {"name": "K2-18b", "temp": 265, "type": "Hycean"}
-        ]
-
+            {"name": "TRAPPIST-1d", "temp": 282, "type": "Warm rocky"},
+            {"name": "TRAPPIST-1f", "temp": 219, "type": "Cold rocky"},
+            {"name": "TRAPPIST-1g", "temp": 198, "type": "Icy world"},
+            {"name": "TRAPPIST-1h", "temp": 173, "type": "Frozen"},
+            {"name": "Kepler-186f", "temp": 188, "type": "Habitable candidate"},
+            {"name": "Kepler-62f", "temp": 208, "type": "Super-Earth"},
+            {"name": "Kepler-62e", "temp": 270, "type": "Ocean world"},
+            {"name": "LHS 1140 b", "temp": 230, "type": "Dense rocky"},
+            {"name": "Gliese 667 Cc", "temp": 277, "type": "Potentially habitable"},
+            {"name": "HD 209458 b", "temp": 1450, "type": "Hot Jupiter"},
+            {"name": "WASP-12b", "temp": 2500, "type": "Ultra hot Jupiter"},
+            {"name": "WASP-121b", "temp": 2350, "type": "Evaporating giant"},
+            {"name": "55 Cancri e", "temp": 2400, "type": "Lava world"},
+            {"name": "CoRoT-7b", "temp": 1800, "type": "Molten rocky"},
+            {"name": "GJ 1214 b", "temp": 550, "type": "Mini-Neptune"},
+            {"name": "HD 189733 b", "temp": 1200, "type": "Stormy gas giant"}
+        ]          
         index = st.session_state.get("index", 0)
 
         col1, col2, col3 = st.columns([1, 2, 1])
@@ -342,7 +357,7 @@ if mode == "🔬 Advanced":
         <p>🪐 Type: {p['type']}</p>
         </div>
         """, unsafe_allow_html=True)
-
+      
     # -------- TRAPPIST --------
     with tab2:
         st.header("🌌 TRAPPIST-1 System")
