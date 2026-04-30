@@ -70,8 +70,8 @@ if mode == "🌟 Basic":
     tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
 
     # -------- CREATE PLANET --------
-  # -------- CREATE PLANET --------
-with tab1:
+  
+  with tab1:
     st.header("🌍 Create Your Planet (Fixed System)")
 
     # Inputs
@@ -147,7 +147,7 @@ with tab1:
         st.warning("⚠️ Not Ideal")
     # -------- QUIZ --------
     # ---------------- QUIZ + XP SYSTEM ----------------
-with tab2:
+   with tab2:
         st.header("🧠 Quiz Zone")
 
         user = st.session_state.current_user
@@ -265,7 +265,7 @@ with tab2:
 
             st.info(f"✨ You earned {xp_gain} XP!")
     # -------- PROGRESS --------
-with tab3:
+  with tab3:
         st.header("🏆 Progress, Level & Badges")
 
         user = st.session_state.current_user
@@ -302,7 +302,7 @@ with tab3:
             st.write("🛰️ Explorer")
         else:
             st.write("🌍 Beginner")
-with tab4:
+   with tab4:
         st.header("🥇 Leaderboard")
 
         # ALWAYS SAFE ACCESS
@@ -337,7 +337,7 @@ if mode == "🔬 Advanced":
     tab1, tab2, tab3 = st.tabs(["🪐 Planet Cards", "🌌 TRAPPIST System", "🔥 Calculator"])
 
     # -------- PLANET CARDS -------- 
-with tab1:
+  with tab1:
         planets = [
             {"name": "Kepler-22b", "temp": 262, "type": "Ocean world"},
             {"name": "Proxima Centauri b", "temp": 234, "type": "Rocky"},
@@ -369,7 +369,7 @@ with tab1:
         """, unsafe_allow_html=True)
 
     # -------- TRAPPIST SIMULATION --------
-with tab2:
+  with tab2:
         st.header("🌌 TRAPPIST-1 System")
 
         html = "<html><body style='background:black;margin:0;'><style>"
@@ -409,7 +409,7 @@ with tab2:
         st.components.v1.html(html, height=650)
 
     # -------- CALCULATOR --------
-with tab3:
+  with tab3:
         st.header("🔥 Habitability Calculator")
 
         star = st.selectbox("Star Type", ["G-Type", "M-Type"])
