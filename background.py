@@ -309,7 +309,7 @@ if mode == "🌟 Basic":
 # =====================================================
 if mode == "🔬 Advanced":
 
-    tab1, tab2, tab3 = st.tabs(["🪐 Planet Cards", "🌌 exoplanetsystem simulator", "🔥 Calculator"])
+    tab1, tab2, tab3 = st.tabs(["🪐 Planet Cards", "🌌 exoplanet system simulator", "🔥 Calculator"])
 
     # -------- PLANET CARDS --------
     with tab1:
