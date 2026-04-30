@@ -400,7 +400,7 @@ with tab2:
         radii = [80, 130]
         speeds = [10, 16]
         colors = ["lightblue", "green"]
-        names = ["proxima cen b", "proxima cen d"]
+        names = [" b", " d"]
 
     # ================= RENDER =================
 
