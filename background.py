@@ -336,8 +336,8 @@ if mode == "🔬 Advanced":
 
     tab1, tab2, tab3 = st.tabs(["🪐 Planet Cards", "🌌 TRAPPIST System", "🔥 Calculator"])
 
-    # -------- PLANET CARDS -------- 
-  with tab1:
+# -------- PLANET CARDS -------- 
+with tab1:
         planets = [
             {"name": "Kepler-22b", "temp": 262, "type": "Ocean world"},
             {"name": "Proxima Centauri b", "temp": 234, "type": "Rocky"},
@@ -368,8 +368,8 @@ if mode == "🔬 Advanced":
         </div>
         """, unsafe_allow_html=True)
 
-    # -------- TRAPPIST SIMULATION --------
-  with tab2:
+# -------- TRAPPIST SIMULATION --------
+with tab2:
         st.header("🌌 TRAPPIST-1 System")
 
         html = "<html><body style='background:black;margin:0;'><style>"
