@@ -318,7 +318,7 @@ if mode == "🔬 Advanced":
             {"name": "Proxima Centauri b", "temp": 234, "type": "Rocky"},
             {"name": "TRAPPIST-1e", "temp": 251, "type": "Habitable"},
             {"name": "Kepler-452b", "temp": 265, "type": "Earth-like"},
-            {"name": "K2-18b", "temp": 265, "type": "Hycean"}
+            {"name": "K2-18b", "temp": 265, "type": "Hycean"},
             {"name": "TRAPPIST-1d", "temp": 282, "type": "Warm rocky"},
             {"name": "TRAPPIST-1f", "temp": 219, "type": "Cold rocky"},
             {"name": "TRAPPIST-1g", "temp": 198, "type": "Icy world"},
