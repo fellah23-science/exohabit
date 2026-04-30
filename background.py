@@ -345,7 +345,7 @@ if mode == "🔬 Advanced":
 
     # -------- TRAPPIST --------
     with tab2:
-        st.write st.header("🌌 TRAPPIST-1 System")
+        st.header("🌌 TRAPPIST-1 System")
 
         html = "<html><body style='background:black;margin:0;'><style>"
         html += """
