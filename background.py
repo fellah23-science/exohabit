@@ -144,17 +144,17 @@ if mode == "🌟 Basic":
         else:
             st.warning("⚠️ Not Ideal")
 with tab2:
-      st.header("🧠 Quiz Zone")
+    st.header("🧠 Quiz Zone")
 
-      user = st.session_state.current_user
+    user = st.session_state.current_user
 
     # ensure user fields exist
-      if "xp" not in st.session_state.users[user]:
+    if "xp" not in st.session_state.users[user]:
         st.session_state.users[user]["xp"] = 0
         st.session_state.users[user]["completed"] = 0
 
     # track completed quizzes
-       if "quiz_done" not in st.session_state:
+    if "quiz_done" not in st.session_state:
         st.session_state.quiz_done = {}
 
     quiz_data = {
