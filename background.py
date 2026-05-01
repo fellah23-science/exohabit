@@ -390,7 +390,7 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 # ================= TAB 2: EXOPLANET SYSTEM SIMULATOR =================
- with tab2:
+with tab2:
    import streamlit.components.v1 as components
 
     st.header("🌌 Exoplanet System Simulator")
