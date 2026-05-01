@@ -535,10 +535,10 @@ with tab3:
   flux = L / (d ** 2)
   temp = ((flux * (1 - a)) / 4) ** 0.25 * 278
 
-    st.write("Stellar Flux:", round(flux, 2))
-    st.write("Equilibrium Temp:", round(temp, 1))
+  st.write("Stellar Flux:", round(flux, 2))
+  st.write("Equilibrium Temp:", round(temp, 1))
 
-    if temp > 320:
+  if temp > 320:
         st.error("🔥 Too Hot")
     elif 273 <= temp <= 310:
         st.success("🌍 Habitable")
