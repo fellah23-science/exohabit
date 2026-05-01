@@ -522,23 +522,27 @@ with tab2:
     """
 
     st.components.v1.html(html, height=650)
-    # ================= TAB 3: CALCULATOR =================
-    with tab3:
-        st.header("🔥 Habitability Calculator")
+   with tab3:
+    st.header("🔥 Habitability Calculator")
 
-        star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
-        st.slider("Distance (AU)", 0.1, 5.0, 1.0, key="calc_distance")
-        st.slider("Albedo", 0.0, 1.0, 0.3, key="calc_albedo")
-        L = 1 if star == "G-Type" else 0.04
-        flux = L / (d ** 2)
-        temp = ((flux * (1 - a)) / 4) ** 0.25 * 278
+    star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
 
-        st.write("Stellar Flux:", round(flux, 2))
-        st.write("Equilibrium Temp:", round(temp, 1))
+    d = st.slider("Distance (AU)", 0.1, 5.0, 1.0, key="calc_distance")
+    a = st.slider("Albedo", 0.0, 1.0, 0.3, key="calc_albedo")
 
-        if temp > 320:
-            st.error("🔥 Moist Greenhouse")
-        elif 273 <= temp <= 310:
-            st.success("🌍 Habitable")
-        else:
-            st.warning("❄️ Not ideal")
+    # luminosity
+    L = 1 if star == "G-Type" else 0.04
+
+    # calculations
+    flux = L / (d ** 2)
+    temp = ((flux * (1 - a)) / 4) ** 0.25 * 278
+
+    st.write("Stellar Flux:", round(flux, 2))
+    st.write("Equilibrium Temp:", round(temp, 1))
+
+    if temp > 320:
+        st.error("🔥 Too Hot")
+    elif 273 <= temp <= 310:
+        st.success("🌍 Habitable")
+    else:
+        st.warning("❄️ Not Ideal")
