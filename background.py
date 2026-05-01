@@ -522,7 +522,7 @@ with tab2:
     """
 
     st.components.v1.html(html, height=650)
- with tab3:
+with tab3:
   st.header("🔥 Habitability Calculator")
 
     star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
