@@ -1,12 +1,26 @@
 import streamlit as st
 import random
 import math
+import json
+import os
+def load_data():
+    if os.path.exists("users.json"):
+        with open("users.json", "r") as f:
+            return json.load(f)
+    return {}
+
+def save_data():
+    with open("users.json", "w") as f:
+        json.dump(st.session_state.users, f)
 
 st.set_page_config(page_title="ExoHabit", layout="wide")
 
 # ================= INIT =================
 if "users" not in st.session_state:
-    st.session_state.users = {}
+    st.session_state.users = load_data()
+
+if "leaderboard" not in st.session_state:
+    st.session_state.leaderboard = {}
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -14,6 +28,8 @@ if "logged_in" not in st.session_state:
 if "current_user" not in st.session_state:
     st.session_state.current_user = None
 
+if "index" not in st.session_state:
+    st.session_state.index = 0
 
 # ================= LOGIN =================
 def login_page():
@@ -26,13 +42,15 @@ def login_page():
 
     if option == "Signup":
         if st.button("Create Account"):
-            if username and password:
-                st.session_state.users[username] = {
-                    "password": password,
-                    "xp": 0,
-                    "completed": 0
-                }
-                st.success("Account created!")
+
+    st.session_state.users[username] = {
+        "password": password,
+        "xp": 0,
+        "completed": 0
+    }
+
+    save_data()   # ✅ RIGHT HERE
+             st.success("Account created!")
 
     if option == "Login":
         if st.button("Login"):
@@ -241,6 +259,24 @@ if mode == "🌟 Basic":
                 st.balloons()
 
             st.info(f"✨ You earned {xp_gain} XP!")
+            if st.button("Submit Quiz"):
+    score = 0
+    for i, (q, opt, ans) in enumerate(qset):
+        if answers[i] == ans:
+            score += 1
+
+    st.success(f"Score: {score}/5")
+
+    xp_gain = score * 10
+    st.session_state.users[user]["xp"] += xp_gain
+
+    if score >= 3:
+        st.session_state.users[user]["completed"] += 1
+        st.balloons()
+
+    st.info(f"✨ You earned {xp_gain} XP!")
+
+    save_data()   # ✅ THIS IS THE MOST IMPORTANT LINE
 
     # -------- PROGRESS --------
     with tab3:
