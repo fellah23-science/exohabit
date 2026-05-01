@@ -391,76 +391,125 @@ if mode == "🔬 Advanced":
         </div>
         """, unsafe_allow_html=True)
 
-    # ================= TAB 2: SYSTEM SIMULATOR =================
-    with tab2:
-        st.header("🌌 Exoplanet System Simulator")
+ with tab2:
+    st.header("🌌 Exoplanet System Simulator")
 
-        system = st.selectbox(
-            "Choose System",
-            ["TRAPPIST-1", "Kepler-90", "Proxima Centauri"]
-        )
+    system = st.selectbox(
+        "Choose System",
+        ["TRAPPIST-1", "Kepler-90", "Proxima Centauri"]
+    )
 
-        html = "<html><body style='background:black;margin:0;'><style>"
-        html += """
-        .container{position:relative;width:600px;height:600px;margin:auto;}
-        .star{position:absolute;top:50%;left:50%;width:18px;height:18px;background:red;
-        border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 30px red;}
+    html = """
+    <html>
+    <body style='background:black;margin:0;overflow:hidden;'>
+    <style>
 
-        .orbit-path{position:absolute;top:50%;left:50%;
-        border:1px solid rgba(255,255,255,0.2);
-        border-radius:50%;transform:translate(-50%,-50%);}
+    .container{
+        position:relative;
+        width:600px;
+        height:600px;
+        margin:auto;
+    }
 
-        .orbit{position:absolute;top:50%;left:50%;
-        transform-origin:center;animation:spin linear infinite;}
+    .star{
+        position:absolute;
+        top:50%;
+        left:50%;
+        width:20px;
+        height:20px;
+        background: radial-gradient(circle, yellow, orange, red);
+        border-radius:50%;
+        transform:translate(-50%,-50%);
+        box-shadow:0 0 40px yellow, 0 0 80px orange;
+    }
 
-        .planet{position:absolute;top:0;left:0;
-        transform:translateX(var(--r));display:flex;}
+    .orbit-path{
+        position:absolute;
+        top:50%;
+        left:50%;
+        border:1px solid rgba(255,255,255,0.15);
+        border-radius:50%;
+        transform:translate(-50%,-50%);
+    }
 
-        .dot{width:10px;height:10px;border-radius:50%;}
-        .label{color:white;font-size:10px;margin-left:5px;}
+    .orbit{
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform-origin:center;
+        animation:spin linear infinite;
+    }
 
-        @keyframes spin{
-            from{transform:rotate(0deg);}
-            to{transform:rotate(360deg);}
-        }
-        """
-        html += "</style><div class='container'><div class='star'></div>"
+    .planet{
+        position:absolute;
+        top:0;
+        left:0;
+        transform:translateX(var(--r));
+        display:flex;
+        align-items:center;
+    }
 
-        # ================= SYSTEM DATA =================
-        if system == "TRAPPIST-1":
-            radii = [50, 70, 90, 110, 130, 150, 170]
-            speeds = [6, 8, 10, 12, 14, 16, 18]
-            colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white"]
-            names = ["b", "c", "d", "e", "f", "g", "h"]
+    .dot{
+        width:10px;
+        height:10px;
+        border-radius:50%;
+        box-shadow:0 0 10px white;
+    }
 
-        elif system == "Kepler-90":
-            radii = [40, 55, 70, 90, 110, 130, 150, 180]
-            speeds = [5, 7, 9, 11, 13, 15, 17, 20]
-            colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white", "purple"]
-            names = ["b", "c", "i", "d", "e", "f", "g", "h"]
+    .label{
+        color:white;
+        font-size:10px;
+        margin-left:5px;
+        opacity:0.7;
+    }
 
-        elif system == "Proxima Centauri":
-            radii = [80, 130]
-            speeds = [10, 16]
-            colors = ["lightblue", "green"]
-            names = ["b", "d"]
+    @keyframes spin{
+        from{transform:rotate(0deg);}
+        to{transform:rotate(360deg);}
+    }
 
-        # ================= RENDER =================
-        for r, s, c, n in zip(radii, speeds, colors, names):
-            html += f"""
-            <div class='orbit-path' style='width:{r*2}px;height:{r*2}px;'></div>
-            <div class='orbit' style='animation-duration:{s}s;'>
-                <div class='planet' style='--r:{r}px;'>
-                    <div class='dot' style='background:{c};'></div>
-                    <div class='label'>{system}-{n}</div>
-                </div>
+    </style>
+
+    <div class='container'>
+        <div class='star'></div>
+    """
+
+    # ================= SYSTEM DATA =================
+    if system == "TRAPPIST-1":
+        base_radii = [40, 55, 70, 90, 110, 130, 150]
+        colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white"]
+        names = ["b","c","d","e","f","g","h"]
+
+    elif system == "Kepler-90":
+        base_radii = [35, 50, 65, 85, 110, 140, 170, 210]
+        colors = ["gray","orange","yellow","lightblue","blue","cyan","white","purple"]
+        names = ["b","c","i","d","e","f","g","h"]
+
+    elif system == "Proxima Centauri":
+        base_radii = [80, 140]
+        colors = ["lightblue","green"]
+        names = ["b","d"]
+
+    # ================= REALISTIC SPEED (KEY UPGRADE) =================
+    for r, c, n in zip(base_radii, colors, names):
+
+        # Kepler-like scaling
+        speed = max(4, int(40 / (r ** 0.5)))
+
+        html += f"""
+        <div class='orbit-path' style='width:{r*2}px;height:{r*2}px;'></div>
+
+        <div class='orbit' style='animation-duration:{speed}s;'>
+            <div class='planet' style='--r:{r}px;'>
+                <div class='dot' style='background:{c};'></div>
+                <div class='label'>{system}-{n}</div>
             </div>
-            """
+        </div>
+        """
 
-        html += "</div></body></html>"
+    html += "</div></body></html>"
 
-        st.components.v1.html(html, height=650)
-
+    st.components.v1.html(html, height=650)
     # ================= TAB 3: CALCULATOR =================
     with tab3:
         st.header("🔥 Habitability Calculator")
