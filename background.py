@@ -404,7 +404,7 @@ with tab2:
     </style>
     """, unsafe_allow_html=True)
 
-    solar_html = """
+   solar_html = """
     <!DOCTYPE html>
     <html>
     <head>
