@@ -714,164 +714,141 @@ with tab2:
         """
 
         components.html(solar_html, height=950)  
+html = """
+<html>
+<body style='margin:0;background:black;overflow:hidden;'>
 
-    # ================= 🌌 OTHER SYSTEMS =================
-    else:
+<style>
+.space{
+    position:relative;
+    width:650px;
+    height:650px;
+    margin:auto;
+    background:black;
+}
 
-        html = """
-        <html>
-        <body style='background:black;margin:0;overflow:hidden;'>
+/* stars */
+.star{
+    position:absolute;
+    background:white;
+    border-radius:50%;
+    animation:twinkle 3s infinite alternate;
+}
+@keyframes twinkle{
+    from{opacity:0.2;}
+    to{opacity:1;}
+}
 
-        <style>
-        .container{
-            position:relative;
-            width:600px;
-            height:600px;
-            margin:auto;
-        }
+/* main star */
+.main-star{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:22px;
+    height:22px;
+    margin-left:-11px;
+    margin-top:-11px;
+    background:radial-gradient(circle,yellow,orange,red);
+    border-radius:50%;
+    box-shadow:0 0 60px orange, 0 0 120px red;
+}
 
-        .star{
-            position:absolute;
-            top:50%;
-            left:50%;
-            width:20px;
-            height:20px;
-            background: radial-gradient(circle, yellow, orange, red);
-            border-radius:50%;
-            transform:translate(-50%,-50%);
-            box-shadow:0 0 40px yellow;
-        }
+/* orbit path */
+.orbit{
+    position:absolute;
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:50%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
 
-        .orbit-path{
-            position:absolute;
-            top:50%;
-            left:50%;
-            border:1px solid rgba(255,255,255,0.2);
-            border-radius:50%;
-            transform:translate(-50%,-50%);
-        }
+/* independent spin */
+.spin{
+    position:absolute;
+    width:100%;
+    height:100%;
+    animation:spin linear infinite;
+}
 
-        .orbit{
-            position:absolute;
-            top:50%;
-            left:50%;
-            transform-origin:center;
-            animation-name:spin;
-            animation-timing-function:linear;
-            animation-iteration-count:infinite;
-        }
+@keyframes spin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+}
 
-        .planet{
-            position:absolute;
-            top:0;
-            left:0;
-            transform:translateX(var(--r));
-        }
+/* planet */
+.planet{
+    position:absolute;
+    border-radius:50%;
+    transition:0.3s;
+}
+.planet:hover{
+    transform:scale(1.4);
+    box-shadow:0 0 20px white;
+}
 
-        .planet-wrap{
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-        }
+/* label */
+.label{
+    position:absolute;
+    color:white;
+    font-size:11px;
+    left:18px;
+    top:-4px;
+    background:rgba(0,0,0,0.6);
+    padding:2px 6px;
+    border-radius:6px;
+    white-space:nowrap;
+}
+</style>
 
-        .dot{
-            width:10px;
-            height:10px;
-            border-radius:50%;
-            box-shadow:0 0 10px white;
-        }
+<div class="space">
+"""
 
-        .label{
-            color:white;
-            font-size:10px;
-            margin-top:4px;
-            background:rgba(0,0,0,0.6);
-            padding:2px 5px;
-            border-radius:5px;
-            white-space:nowrap;
-        }
+# ⭐ STAR FIELD
+import random
+for _ in range(140):
+    x = random.randint(0,650)
+    y = random.randint(0,650)
+    size = random.randint(1,2)
+    html += f"<div class='star' style='width:{size}px;height:{size}px;top:{y}px;left:{x}px;'></div>"
 
-        @keyframes spin{
-            from{transform:rotate(0deg);}
-            to{transform:rotate(360deg);}
-        }
+html += "<div class='main-star'></div>"
+for i, (r, c, n) in enumerate(zip(radii, colors, names)):
 
-        .stars{
-            position:absolute;
-            width:100%;
-            height:100%;
-        }
+    # 🌍 size scaling
+    size = 6 + (i * 2)
 
-        .star-dot{
-            position:absolute;
-            width:2px;
-            height:2px;
-            background:white;
-            border-radius:50%;
-            animation:twinkle 2s infinite alternate;
-        }
+    # 🐢 slow realistic speed
+    speed = 30 + (i * 12)
 
-        @keyframes twinkle{
-            from{opacity:0.2;}
-            to{opacity:1;}
-        }
+    html += f"""
+    <div class="orbit" style="width:{r*2}px;height:{r*2}px;">
 
-        </style>
+        <div class="spin" style="animation-duration:{speed}s;">
 
-        <div class='container'>
-        <div class='stars'>
-        """
+            <div class="planet"
+                 style="
+                 width:{size}px;
+                 height:{size}px;
+                 top:50%;
+                 left:-{size/2}px;
 
-        import random
+                 background:radial-gradient(circle at 30% 30%, white, {c});
+                 box-shadow:0 0 12px {c};
+                 ">
 
-        for _ in range(120):
-            x = random.randint(0, 600)
-            y = random.randint(0, 600)
+                <div class="label">{system}-{n}</div>
 
-            html += f"<div class='star-dot' style='top:{y}px; left:{x}px;'></div>"
-
-        html += "</div><div class='star'></div>"
-
-        # SYSTEM DATA
-        if system == "TRAPPIST-1":
-            radii = [40, 60, 80, 100, 120, 140, 160]
-            colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white"]
-            names = ["b", "c", "d", "e", "f", "g", "h"]
-
-        elif system == "Kepler-90":
-            radii = [35, 55, 75, 95, 120, 150, 180, 210]
-            colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white", "purple"]
-            names = ["b", "c", "i", "d", "e", "f", "g", "h"]
-
-        else:
-            radii = [90, 150]
-            colors = ["lightblue", "green"]
-            names = ["b", "d"]
-
-        # RENDER PLANETS
-        for i, (r, c, n) in enumerate(zip(radii, colors, names)):
-            speed = max(5, int(50 / (r ** 0.5)))
-            angle = i * (360 / len(radii))
-
-            html += f"""
-            <div class='orbit-path' style='width:{r*2}px;height:{r*2}px;'></div>
-
-            <div class='orbit'
-                 style='animation-duration:{speed}s;
-                        transform:rotate({angle}deg);'>
-
-                <div class='planet' style='--r:{r}px;'>
-
-                    <div class='planet-wrap'>
-                        <div class='dot' style='background:{c};'></div>
-                        <div class='label'>{system}-{n}</div>
-                    </div>
-
-                </div>
             </div>
-            """
 
-        html += "</div></body></html>"
+        </div>
+    </div>
+    """
+   html += """
+</div>
+</body>
+</html>
+""" 
 
         components.html(html, height=650)
 with tab3:
