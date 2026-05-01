@@ -244,26 +244,13 @@ if mode == "🌟 Basic":
             answers.append(st.radio(q, opt,key=f"{choice}_{i}_{user}" ))
 
         if st.button("Submit Quiz"):
-            score = 0
-            for i, (q, opt, ans) in enumerate(qset):
-                if answers[i] == ans:
-                    score += 1
+    score = 0
 
-            st.success(f"Score: {score}/5")
-
-            xp_gain = score * 10
-            st.session_state.users[user]["xp"] += xp_gain
-
-            if score >= 3:
-                st.session_state.users[user]["completed"] += 1
-                st.balloons()
-
-            st.info(f"✨ You earned {xp_gain} XP!")
-            if st.button("Submit Quiz"):
-             score = 0
     for i, (q, opt, ans) in enumerate(qset):
         if answers[i] == ans:
             score += 1
+
+    score = max(0, min(score, 5))
 
     st.success(f"Score: {score}/5")
 
@@ -276,8 +263,7 @@ if mode == "🌟 Basic":
 
     st.info(f"✨ You earned {xp_gain} XP!")
 
-    save_data()   # ✅ THIS IS THE MOST IMPORTANT LINE
-
+    save_data()
     # -------- PROGRESS --------
     with tab3:
         st.header("🏆 Progress, Level & Badges")
