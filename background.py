@@ -143,101 +143,19 @@ if mode == "🌟 Basic":
 
         else:
             st.warning("⚠️ Not Ideal")
+# INIT (top of file)
+if "quiz_done" not in st.session_state:
+    st.session_state.quiz_done = {}
+
+# ---------------- QUIZ TAB ----------------
 with tab2:
     st.header("🧠 Quiz Zone")
 
     user = st.session_state.current_user
 
-    # ensure user fields exist
     if "xp" not in st.session_state.users[user]:
         st.session_state.users[user]["xp"] = 0
         st.session_state.users[user]["completed"] = 0
-
-    # track completed quizzes
-    if "quiz_done" not in st.session_state:
-        st.session_state.quiz_done = {}
-
-    quiz_data = {
-        "Quiz 1": [
-            ("Which planet is closest to the Sun?", ["Mercury", "Venus", "Earth", "Mars"], "Mercury"),
-            ("Which is the hottest planet?", ["Earth", "Venus", "Mercury", "Mars"], "Venus"),
-            ("What is the Red Planet?", ["Mars", "Jupiter", "Earth", "Venus"], "Mars"),
-            ("Largest planet?", ["Earth", "Saturn", "Jupiter", "Mars"], "Jupiter"),
-            ("Which planet has rings?", ["Mars", "Earth", "Saturn", "Venus"], "Saturn")
-        ],
-
-        "Quiz 2": [
-            ("What powers stars?", ["Fusion", "Fission", "Electricity", "Gravity"], "Fusion"),
-            ("Our galaxy name?", ["Milky Way", "Andromeda", "Orion", "Pegasus"], "Milky Way"),
-            ("Moon is a?", ["Planet", "Star", "Satellite", "Comet"], "Satellite"),
-            ("Orbit means?", ["Path", "Speed", "Mass", "Energy"], "Path"),
-            ("Comets are mostly?", ["Ice", "Rock", "Metal", "Gas"], "Ice")
-        ],
-
-        "Quiz 3": [
-            ("Exoplanet means?", ["Outside solar system", "Inside system", "Moon", "Star"], "Outside solar system"),
-            ("Albedo measures?", ["Reflectivity", "Heat", "Mass", "Speed"], "Reflectivity"),
-            ("Habitable zone allows?", ["Liquid water", "Gas", "Ice", "Metal"], "Liquid water"),
-            ("Temperature unit?", ["Kelvin", "Meter", "Second", "Joule"], "Kelvin"),
-            ("Flux means?", ["Energy received", "Mass", "Speed", "Distance"], "Energy received")
-        ],
-
-        "Quiz 4": [
-            ("Sun type?", ["G-type", "M-type", "K-type", "O-type"], "G-type"),
-            ("Closest star?", ["Proxima Centauri", "Sirius", "Vega", "Betelgeuse"], "Proxima Centauri"),
-            ("Speed of light?", ["3e8 m/s", "1e6", "1e3", "1e2"], "3e8 m/s"),
-            ("Orbit shape?", ["Ellipse", "Square", "Triangle", "Line"], "Ellipse"),
-            ("Mars color?", ["Red", "Blue", "Green", "White"], "Red")
-        ],
-
-        "Quiz 5": [
-            ("TRAPPIST-1 has how many planets?", ["7", "5", "9", "3"], "7"),
-            ("Red dwarfs are?", ["Small stars", "Planets", "Gas clouds", "Moons"], "Small stars"),
-            ("Life needs?", ["Water", "Metal", "Dust", "Gas"], "Water"),
-            ("Earth avg temp?", ["288K", "100K", "500K", "50K"], "288K"),
-            ("Sun age?", ["4.6 billion years", "1 billion", "10 billion", "100 million"], "4.6 billion years")
-        ],
-
-        "Quiz 6": [
-            ("Jupiter type?", ["Gas giant", "Rocky", "Ice", "Metal"], "Gas giant"),
-            ("Saturn has?", ["Rings", "Moons only", "No rings", "No gravity"], "Rings"),
-            ("Neptune winds?", ["Fast", "Slow", "None", "Calm"], "Fast"),
-            ("Mercury moons?", ["0", "1", "2", "3"], "0"),
-            ("Venus rotation?", ["Slow", "Fast", "Normal", "None"], "Slow")
-        ],
-
-        "Quiz 7": [
-            ("Black hole is?", ["Gravity trap", "Light", "Energy", "Gas"], "Gravity trap"),
-            ("Supernova?", ["Explosion", "Cooling", "Orbit", "Fusion"], "Explosion"),
-            ("Nebula?", ["Gas cloud", "Planet", "Star", "Rock"], "Gas cloud"),
-            ("Galaxy shape?", ["Spiral", "Square", "Flat", "Triangle"], "Spiral"),
-            ("Dark matter?", ["Invisible", "Visible", "Solid", "Liquid"], "Invisible")
-        ],
-
-        "Quiz 8": [
-            ("ISS is?", ["Space station", "Planet", "Star", "Rocket"], "Space station"),
-            ("Hubble is?", ["Telescope", "Planet", "Rocket", "Satellite"], "Telescope"),
-            ("JWST observes?", ["Infrared", "Radio", "X-ray", "UV"], "Infrared"),
-            ("Rocket fuel?", ["Chemical", "Water", "Air", "Electric"], "Chemical"),
-            ("Escape velocity?", ["Minimum speed", "Mass", "Force", "Energy"], "Minimum speed")
-        ],
-
-        "Quiz 9": [
-            ("Orbit shape?", ["Ellipse", "Circle only", "Square", "Line"], "Ellipse"),
-            ("Gravity is?", ["Force", "Light", "Energy", "Wave"], "Force"),
-            ("Mass unit?", ["kg", "m", "s", "J"], "kg"),
-            ("Distance unit?", ["AU", "kg", "s", "W"], "AU"),
-            ("Time unit?", ["Second", "Meter", "AU", "kg"], "Second")
-        ],
-
-        "Quiz 10": [
-            ("Life requires?", ["Water", "Iron", "Dust", "Gas"], "Water"),
-            ("Gold formed in?", ["Supernova", "Earth", "Moon", "Sun"], "Supernova"),
-            ("Hot stars color?", ["Blue", "Red", "Yellow", "White"], "Blue"),
-            ("Cool stars?", ["Red", "Blue", "White", "Yellow"], "Red"),
-            ("Universe expanding?", ["Yes", "No", "Maybe", "Unknown"], "Yes")
-        ]
-    }
 
     choice = st.selectbox("Choose Quiz", list(quiz_data.keys()))
     qset = quiz_data[choice]
@@ -245,22 +163,32 @@ with tab2:
     answers = []
 
     for i, (q, opt, ans) in enumerate(qset):
-        answers.append(st.radio(q, opt, key=f"{choice}_{i}_{user}"))
+        answers.append(
+            st.radio(q, opt, key=f"{choice}_{i}_{user}")
+        )
 
     quiz_key = f"{user}_{choice}"
 
-    # 🔒 Already completed check
-    if st.session_state.quiz_done.get(quiz_key, False):
-        st.success("✅ Already completed! XP already awarded.")
-    else:
-        if st.button("Submit Quiz"):
+    # RESET BUTTON
+    if st.button("🔄 Reset This Quiz"):
+        if quiz_key in st.session_state.quiz_done:
+            del st.session_state.quiz_done[quiz_key]
+            st.success("You can attempt again!")
 
+    # SUBMIT BUTTON (ALL LOGIC INSIDE)
+    if st.button("Submit Quiz"):
+
+        if st.session_state.quiz_done.get(quiz_key, False):
+            st.warning("Already submitted!")
+        else:
             score = 0
+
             for i, (q, opt, ans) in enumerate(qset):
                 if answers[i] == ans:
                     score += 1
 
             score = max(0, min(score, 5))
+
             st.success(f"Score: {score}/5")
 
             xp_gain = score * 10
@@ -272,7 +200,6 @@ with tab2:
 
             st.info(f"✨ You earned {xp_gain} XP!")
 
-            # 🔒 lock quiz
             st.session_state.quiz_done[quiz_key] = True
 
             save_data()
