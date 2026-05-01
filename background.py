@@ -391,17 +391,9 @@ if mode == "🔬 Advanced":
         </div>
         """, unsafe_allow_html=True)
 with tab2:
-    import streamlit as st
-    import streamlit.components.v1 as components
-    import random
+    
 
     st.header("🌌 Exoplanet System Simulator")
-
-    system = st.selectbox(
-        "Choose System",
-        ["TRAPPIST-1", "Kepler-90", "Proxima Centauri", "Solar System"],
-        key="sim_system"
-    )
 
     # ================= ⭐ STAR HELPER =================
     def generate_stars():
