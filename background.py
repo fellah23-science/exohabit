@@ -314,7 +314,7 @@ with tab3:
         st.progress((xp % 100) / 100)
 
     # ================= TAB 4 =================
-    with tab4:
+with tab4:
         st.header("🥇 Leaderboard")
 
         users = st.session_state.users
