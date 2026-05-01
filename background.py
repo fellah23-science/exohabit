@@ -403,12 +403,22 @@ with tab2:
         key="sim_system"
     )
 
+    # ================= ⭐ STAR HELPER =================
+    def generate_stars():
+        stars = ""
+        for _ in range(180):
+            x = random.randint(0, 650)
+            y = random.randint(0, 650)
+            s = random.randint(1, 2)
+            stars += f"<div class='star' style='width:{s}px;height:{s}px;top:{y}px;left:{x}px;'></div>"
+        return stars
+
     # ================= ☀️ SOLAR SYSTEM =================
     if system == "Solar System":
           
-      import streamlit.components.v1 as components
+     import streamlit.components.v1 as components
 
-      st.markdown("""
+        st.markdown("""
             <style>
             iframe {
                 background-color: black !important;
@@ -417,9 +427,9 @@ with tab2:
             </style>
         """, unsafe_allow_html=True)
 
-      st.subheader("🌌 Planetarium View")
+        st.subheader("🌌 Planetarium View")
 
-      solar_html = """
+        solar_html = """
         <!DOCTYPE html>
         <html>
         <head>
@@ -713,153 +723,148 @@ with tab2:
         </html>
         """
 
-components.html(solar_html, height=980)
-  
+        components.html(solar_html, height=980)
+ 
 
-        
+        st.subheader("🌌 Planetarium View")
+
+        solar_html = """PASTE YOUR FULL SOLAR SYSTEM CODE HERE EXACTLY"""
+
+        components.html(solar_html, height=980)
 
     # ================= 🌌 EXOPLANET SYSTEMS =================
     else:
 
-     st.subheader(f"🌍 {system} System View")
+        st.subheader(f"🌍 {system} System View")
 
-    def get_system_data(name):
+        def get_system_data(name):
 
-        if name == "TRAPPIST-1":
-            radii = [60, 90, 120, 150, 180, 210, 240]
-            colors = ["#9be7ff", "#ffd6a5", "#fdffb6", "#caffbf",
-                      "#a0c4ff", "#bdb2ff", "#ffc6ff"]
-            base = "TRAPPIST-1"
-            letters = ["b","c","d","e","f","g","h"]
+            if name == "TRAPPIST-1":
+                radii = [60, 90, 120, 150, 180, 210, 240]
+                colors = ["#9be7ff", "#ffd6a5", "#fdffb6", "#caffbf",
+                          "#a0c4ff", "#bdb2ff", "#ffc6ff"]
+                base = "TRAPPIST-1"
+                letters = ["b","c","d","e","f","g","h"]
 
-        elif name == "Kepler-90":
-            radii = [80, 120, 170, 220, 270, 320, 370, 420]
-            colors = ["#ffadad", "#ffd6a5", "#fdffb6", "#caffbf",
-                      "#a0c4ff", "#bdb2ff", "#ffc6ff", "#90e0ef"]
-            base = "Kepler-90"
-            letters = ["b","c","d","e","f","g","h","i"]
+            elif name == "Kepler-90":
+                radii = [80, 120, 170, 220, 270, 320, 370, 420]
+                colors = ["#ffadad", "#ffd6a5", "#fdffb6", "#caffbf",
+                          "#a0c4ff", "#bdb2ff", "#ffc6ff", "#90e0ef"]
+                base = "Kepler-90"
+                letters = ["b","c","d","e","f","g","h","i"]
 
-        else:
-            radii = [120, 200, 280]
-            colors = ["#ff6b6b", "#ffd93d", "#6bcB77"]
-            base = "Proxima Centauri"
-            letters = ["b","c","d"]
+            else:
+                radii = [120, 200, 280]
+                colors = ["#ff6b6b", "#ffd93d", "#6bcB77"]
+                base = "Proxima Centauri"
+                letters = ["b","c","d"]
 
-        names = [f"{base}-{l}" for l in letters]
-        return radii, colors, names
+            names = [f"{base}-{l}" for l in letters]
+            return radii, colors, names
 
-    radii, colors, names = get_system_data(system)
+        radii, colors, names = get_system_data(system)
 
-    import random
+        stars = generate_stars()
 
-    stars = ""
-    for _ in range(180):
-        x = random.randint(0, 650)
-        y = random.randint(0, 650)
-        s = random.randint(1, 2)
-        stars += f"<div class='star' style='width:{s}px;height:{s}px;top:{y}px;left:{x}px;'></div>"
+        html = """
+        <html>
+        <body style='margin:0;background:black;overflow:hidden;'>
 
-    html = f"""
-    <html>
-    <body style='margin:0;background:black;overflow:hidden;'>
+        <style>
+        .space{
+            position:relative;
+            width:650px;
+            height:650px;
+            margin:auto;
+            background:black;
+            overflow:hidden;
+        }
 
-    <style>
-    .space{{
-        position:relative;
-        width:650px;
-        height:650px;
-        margin:auto;
-        background:black;
-        overflow:hidden;
-    }}
+        .star{
+            position:absolute;
+            background:white;
+            border-radius:50%;
+        }
 
-    .star{{
-        position:absolute;
-        background:white;
-        border-radius:50%;
-    }}
+        .sun{
+            position:absolute;
+            top:50%;
+            left:50%;
+            width:18px;
+            height:18px;
+            margin-left:-9px;
+            margin-top:-9px;
+            background:radial-gradient(circle,yellow,orange,red);
+            border-radius:50%;
+            box-shadow:0 0 40px orange,0 0 80px red;
+        }
 
-    .sun{{
-        position:absolute;
-        top:50%;
-        left:50%;
-        width:18px;
-        height:18px;
-        margin-left:-9px;
-        margin-top:-9px;
-        background:radial-gradient(circle,yellow,orange,red);
-        border-radius:50%;
-        box-shadow:0 0 40px orange,0 0 80px red;
-    }}
+        .orbit{
+            position:absolute;
+            border:1px solid rgba(255,255,255,0.15);
+            border-radius:50%;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+        }
 
-    .orbit{{
-        position:absolute;
-        border:1px solid rgba(255,255,255,0.15);
-        border-radius:50%;
-        top:50%;
-        left:50%;
-        transform:translate(-50%,-50%);
-    }}
+        .spin{
+            position:absolute;
+            width:100%;
+            height:100%;
+            animation:spin linear infinite;
+        }
 
-    .spin{{
-        position:absolute;
-        width:100%;
-        height:100%;
-        animation:spin linear infinite;
-    }}
+        .planet{
+            position:absolute;
+            border-radius:50%;
+        }
 
-    .planet{{
-        position:absolute;
-        border-radius:50%;
-    }}
+        .label{
+            position:absolute;
+            color:white;
+            font-size:10px;
+            left:16px;
+            top:-4px;
+            background:rgba(0,0,0,0.6);
+            padding:2px 6px;
+            border-radius:6px;
+        }
 
-    .label{{
-        position:absolute;
-        color:white;
-        font-size:10px;
-        left:16px;
-        top:-4px;
-        background:rgba(0,0,0,0.6);
-        padding:2px 6px;
-        border-radius:6px;
-        white-space:nowrap;
-    }}
+        @keyframes spin{
+            from{transform:translate(-50%,-50%) rotate(0deg);}
+            to{transform:translate(-50%,-50%) rotate(360deg);}
+        }
+        </style>
 
-    @keyframes spin{{
-        from{{transform:translate(-50%,-50%) rotate(0deg);}}
-        to{{transform:translate(-50%,-50%) rotate(360deg);}}
-    }}
-    </style>
-
-    <div class="space">
-
-    {stars}
-
-    <div class="sun"></div>
-    """
-
-    for i, (r, c, n) in enumerate(zip(radii, colors, names)):
-
-        size = 6 + i * 2
-        speed = 25 + i * 8
-
-        html += f"""
-        <div class="orbit" style="width:{r*2}px;height:{r*2}px;">
-            <div class="spin" style="animation-duration:{speed}s;">
-                <div class="planet"
-                     style="width:{size}px;height:{size}px;
-                     top:50%;left:-{size/2}px;
-                     background:{c};
-                     box-shadow:0 0 10px {c};">
-                    <div class="label">{n}</div>
-                </div>
-            </div>
-        </div>
+        <div class="space">
         """
 
-    html += "</div></body></html>"
+        html += stars
+        html += "<div class='sun'></div>"
 
-    components.html(html, height=700)
+        for i, (r, c, n) in enumerate(zip(radii, colors, names)):
+
+            size = 6 + i * 2
+            speed = 25 + i * 8
+
+            html += f"""
+            <div class="orbit" style="width:{r*2}px;height:{r*2}px;">
+                <div class="spin" style="animation-duration:{speed}s;">
+                    <div class="planet"
+                         style="width:{size}px;height:{size}px;
+                         top:50%;left:-{size/2}px;
+                         background:{c};
+                         box-shadow:0 0 10px {c};">
+                        <div class="label">{n}</div>
+                    </div>
+                </div>
+            </div>
+            """
+
+        html += "</div></body></html>"
+
+        components.html(html, height=700)
 with tab3:
   st.header("🔥 Habitability Calculator")
   star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
