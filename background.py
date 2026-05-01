@@ -259,7 +259,7 @@ if mode == "🌟 Basic":
 
             st.info(f"✨ You earned {xp_gain} XP!")
             if st.button("Submit Quiz"):
-    score = 0
+             score = 0
     for i, (q, opt, ans) in enumerate(qset):
         if answers[i] == ans:
             score += 1
