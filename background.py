@@ -382,6 +382,13 @@ if mode == "🔬 Advanced":
         st.session_state.index = index
 
         p = planets[index]
+        st.markdown(f"""
+        <div style="border:1px solid #ccc;padding:20px;border-radius:12px;">
+        <h2>{p['name']}</h2>
+        <p>🌡 Temperature: {p['temp']} K</p>
+        <p>🪐 Type: {p['type']}</p>
+        </div>
+        """, unsafe_allow_html=True)
 # ================= TAB 2 =================
 with tab2:
 
