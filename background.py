@@ -50,7 +50,6 @@ def login_page():
     }
 
     save_data()   # ✅ RIGHT HERE
-             st.success("Account created!")
 
     if option == "Login":
         if st.button("Login"):
