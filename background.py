@@ -391,8 +391,8 @@ if mode == "🔬 Advanced":
         </div>
         """, unsafe_allow_html=True)
 
- with tab2:
-    st.header("🌌 Exoplanet System Simulator")
+  with tab2:
+     st.header("🌌 Exoplanet System Simulator")
 
     system = st.selectbox(
         "Choose System",
