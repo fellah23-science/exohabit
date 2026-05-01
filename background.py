@@ -328,7 +328,7 @@ if "quiz_done" not in st.session_state:
         elif level >= 4:
             st.write("🛰️ Explorer")
         else:
-            st.write("🌍 Beginner 
+            st.write("🌍 Beginner")
      with tab4:
         st.header("🥇 Leaderboard")
 
