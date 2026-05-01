@@ -329,33 +329,35 @@ if "quiz_done" not in st.session_state:
             st.write("🛰️ Explorer")
         else:
             st.write("🌍 Beginner") 
- with tab4:
-  st.header("🥇 Leaderboard")
+# -------- LEADERBOARD --------
+with tab4:
+    st.header("🥇 Leaderboard")
 
-    leaderboard = st.session_state.users
+    users = st.session_state.users
 
-    sorted_lb = sorted(
-        leaderboard.items(),
-        key=lambda x: x[1].get("xp", 0),
-        reverse=True
-    )
-
-    if not sorted_lb:
+    if not users:
         st.info("No players yet")
     else:
         st.subheader("🌌 Top Explorers")
 
-        for i, (user, data) in enumerate(sorted_lb[:10]):
+        # Sort by XP
+        sorted_users = sorted(
+            users.items(),
+            key=lambda x: x[1].get("xp", 0),
+            reverse=True
+        )
+
+        for i, (username, data) in enumerate(sorted_users[:10]):
             xp = data.get("xp", 0)
 
             if i == 0:
-                st.success(f"🥇 {user} — {xp} XP")
+                st.success(f"🥇 {username} — {xp} XP")
             elif i == 1:
-                st.info(f"🥈 {user} — {xp} XP")
+                st.info(f"🥈 {username} — {xp} XP")
             elif i == 2:
-                st.warning(f"🥉 {user} — {xp} XP")
+                st.warning(f"🥉 {username} — {xp} XP")
             else:
-                st.write(f"{i+1}. {user} — {xp} XP")
+                st.write(f"{i+1}. {username} — {xp} XP")
 
 # =====================================================
 # 🔬 ADVANCED MODE
