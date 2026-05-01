@@ -399,7 +399,7 @@ with tab2:
         ["TRAPPIST-1", "Kepler-90", "Proxima Centauri"]
     )
 
-    html = """
+     html = """
     <html>
     <body style='background:black;margin:0;overflow:hidden;'>
     <style>
