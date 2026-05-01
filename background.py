@@ -153,8 +153,8 @@ if "quiz_done" not in st.session_state:
     st.session_state.quiz_done = {}
 
   # ---------------- QUIZ TAB ----------------
-   with tab2:
-    st.header("🧠 Quiz Zone")
+    with tab2:
+      st.header("🧠 Quiz Zone")
 
     user = st.session_state.current_user
 
