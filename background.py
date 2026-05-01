@@ -143,9 +143,8 @@ if mode == "🌟 Basic":
 
         else:
             st.warning("⚠️ Not Ideal")
-
-    with tab2:
-    st.header("🧠 Quiz Zone")
+with tab2:
+      st.header("🧠 Quiz Zone")
 
     user = st.session_state.current_user
 
