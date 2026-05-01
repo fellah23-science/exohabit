@@ -171,7 +171,7 @@ if mode == "🌟 Basic":
         st.progress(score)
 
     # ================= TAB 2 (QUIZ) =================
-    with tab2:
+  with tab2:
         st.header("🧠 Quiz Zone")
 
         user = st.session_state.current_user
@@ -390,9 +390,8 @@ if mode == "🔬 Advanced":
         </div>
         """, unsafe_allow_html=True)
 # ================= TAB 2 =================
-with tab2:
-
-    import streamlit.components.v1 as components
+  with tab2:
+   import streamlit.components.v1 as components
 
     st.header("🌌 Exoplanet System Simulator")
 
@@ -622,10 +621,8 @@ with tab2:
     """
 
     components.html(solar_html, height=980)
- 
- 
-with tab3:
-  st.header("🔥 Habitability Calculator")
+  with tab3:
+   st.header("🔥 Habitability Calculator")
   star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
   d = st.slider("Distance (AU)", 0.1, 5.0, 1.0, key="calc_distance")
   a = st.slider("Albedo", 0.0, 1.0, 0.3, key="calc_albedo")
