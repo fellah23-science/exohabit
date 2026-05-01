@@ -43,7 +43,7 @@ def login_page():
     if option == "Signup":
      if st.button("Create Account"):
     
-     st.session_state.users[username] = {
+       st.session_state.users[username] = {
         "password": password,
         "xp": 0,
         "completed": 0
