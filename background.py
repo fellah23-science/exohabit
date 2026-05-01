@@ -2,8 +2,10 @@ import streamlit as st
 import json
 import os
 from datetime import datetime, timedelta
+import streamlit.components.v1 as components
 
 # ================= DATA =================
+
 def load_data():
     if os.path.exists("users.json"):
         with open("users.json", "r") as f:
@@ -14,8 +16,8 @@ def save_data():
     with open("users.json", "w") as f:
         json.dump(st.session_state.users, f)
 
-
 # ================= INIT =================
+
 if "users" not in st.session_state:
     st.session_state.users = load_data()
 
@@ -30,6 +32,7 @@ if "show_profile" not in st.session_state:
 
 
 # ================= LOGIN =================
+
 def login_page():
     st.title("🌌 ExoHabit Login")
 
@@ -45,7 +48,8 @@ def login_page():
                 "xp": 0,
                 "completed": 0,
                 "streak": 1,
-                "avatar": "🚀"
+                "avatar": "🚀",
+                "last_login": str(datetime.now().date())
             }
             save_data()
             st.success("Account created!")
@@ -63,96 +67,87 @@ def login_page():
 
 
 # ================= HARD GATE =================
+
 if not st.session_state.logged_in:
     login_page()
     st.stop()
 
 
-# ================= USER =================
 user = st.session_state.current_user
 user_data = st.session_state.users[user]
 
 
-# ================= SIDEBAR BUTTON =================
-if st.sidebar.button("👤 Profile"):
-    st.session_state.show_profile = not st.session_state.show_profile
+# ================= STREAK =================
 
-
-# ================= STREAK SYSTEM =================
 today = datetime.now().date()
 
-if "last_login" not in user_data:
-    user_data["last_login"] = str(today)
-    user_data["streak"] = 1
-else:
-    last_login = datetime.strptime(user_data["last_login"], "%Y-%m-%d").date()
+if "last_login" in user_data:
+    last = datetime.strptime(user_data["last_login"], "%Y-%m-%d").date()
 
-    if today == last_login:
+    if today == last:
         pass
-    elif today == last_login + timedelta(days=1):
+    elif today == last + timedelta(days=1):
         user_data["streak"] += 1
-        bonus = 5 * user_data["streak"]
-        user_data["xp"] += bonus
-        st.sidebar.success(f"+{bonus} XP 🔥")
+        user_data["xp"] += 5 * user_data["streak"]
     else:
         user_data["streak"] = 1
 
-    user_data["last_login"] = str(today)
-
+user_data["last_login"] = str(today)
 save_data()
 
 
-# ================= PROFILE PAGE =================
+# ================= PROFILE =================
+
+if st.sidebar.button("👤 Profile"):
+    st.session_state.show_profile = not st.session_state.show_profile
+
 if st.session_state.show_profile:
 
-    st.title("👤 My Profile")
+    st.title("👤 Profile")
 
     avatars = ["🚀","🪐","🌌","👩‍🚀","👨‍🚀"]
 
     user_data["avatar"] = st.selectbox(
-        "Choose Avatar",
+        "Avatar",
         avatars,
         index=avatars.index(user_data.get("avatar","🚀"))
     )
 
-    xp = user_data.get("xp", 0)
+    xp = user_data["xp"]
     level = xp // 100 + 1
-    completed = user_data.get("completed", 0)
-    streak = user_data.get("streak", 1)
 
-    # Center display
-    st.markdown(f"""
-    <div style="text-align:center;">
-        <h1 style="font-size:70px;">{user_data['avatar']}</h1>
-        <h2>{user}</h2>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"<h1 style='text-align:center'>{user_data['avatar']}</h1>", unsafe_allow_html=True)
+    st.write("User:", user)
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("⭐ XP", xp)
-    col2.metric("🎯 Level", level)
-    col3.metric("🔥 Streak", streak)
+    col1.metric("XP", xp)
+    col2.metric("Level", level)
+    col3.metric("Streak", user_data["streak"])
 
-    st.progress((xp % 100) / 100)
+    st.stop()
 
-    st.write("### 🧠 Quizzes Completed:", completed)
 
-    save_data()
-
-    st.stop()   # 🚨 VERY IMPORTANT
+# ================= MODE =================
 
 mode = st.sidebar.radio("Mode", ["🌟 Basic", "🔬 Advanced"])
 
+
 # =====================================================
-# 🌟 BASIC MODE
+# 🌟 BASIC MODE (FULL)
 # =====================================================
+
 if mode == "🌟 Basic":
 
-    tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "🌍 Create Planet",
+        "🧠 Quiz",
+        "🏆 Progress",
+        "🥇 Leaderboard"
+    ])
 
-    # ================= TAB 1 =================
-with tab1:
-        st.header("🌍 Create Your Planet")
+    # ---------------- TAB 1 ----------------
+    with tab1:
+        st.header("🌍 Create Planet")
 
         star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
         distance = st.slider("Distance (AU)", 0.1, 3.0, 1.0)
@@ -164,106 +159,98 @@ with tab1:
 
         score = int(max(0, min(100, 100 - abs(temp - 288))))
 
-        st.metric("🌟 Flux", round(flux, 2))
-        st.metric("🌡 Temp", round(temp, 1))
-        st.metric("🪐 Score", score)
-
+        st.metric("Flux", round(flux, 2))
+        st.metric("Temp", round(temp, 1))
+        st.metric("Score", score)
         st.progress(score)
 
-    # ================= TAB 2 (QUIZ) =================
-with tab2:
+
+    # ---------------- TAB 2 ----------------
+    with tab2:
         st.header("🧠 Quiz Zone")
-
-        user = st.session_state.current_user
-
-        if "xp" not in st.session_state.users[user]:
-            st.session_state.users[user]["xp"] = 0
-            st.session_state.users[user]["completed"] = 0
-
-        if "quiz_done" not in st.session_state:
-            st.session_state.quiz_done = {}
 
         quiz_data = {
 
-            "Quiz 1": [
-                ("Closest planet to Sun?", ["Mercury", "Venus", "Earth", "Mars"], "Mercury"),
-                ("Hottest planet?", ["Earth", "Venus", "Mercury", "Mars"], "Venus"),
-                ("Red planet?", ["Mars", "Jupiter", "Earth", "Venus"], "Mars"),
-                ("Largest planet?", ["Earth", "Saturn", "Jupiter", "Mars"], "Jupiter"),
-                ("Planet with rings?", ["Mars", "Earth", "Saturn", "Venus"], "Saturn")
-            ],
+        "Quiz 1": [
+            ("Closest planet to Sun?", ["Mercury","Venus","Earth","Mars"], "Mercury"),
+            ("Hottest planet?", ["Earth","Venus","Mercury","Mars"], "Venus"),
+            ("Red planet?", ["Mars","Jupiter","Earth","Venus"], "Mars"),
+            ("Largest planet?", ["Earth","Saturn","Jupiter","Mars"], "Jupiter"),
+            ("Planet with rings?", ["Mars","Earth","Saturn","Venus"], "Saturn")
+        ],
 
-            "Quiz 2": [
-                ("What powers stars?", ["Fusion", "Fission", "Electricity", "Gravity"], "Fusion"),
-                ("Our galaxy?", ["Milky Way", "Andromeda", "Orion", "Pegasus"], "Milky Way"),
-                ("Moon is?", ["Planet", "Star", "Satellite", "Comet"], "Satellite"),
-                ("Orbit means?", ["Path", "Speed", "Mass", "Energy"], "Path"),
-                ("Comets mostly?", ["Ice", "Rock", "Metal", "Gas"], "Ice")
-            ],
+        "Quiz 2": [
+            ("What powers stars?", ["Fusion","Fission","Electricity","Gravity"], "Fusion"),
+            ("Our galaxy?", ["Milky Way","Andromeda","Orion","Pegasus"], "Milky Way"),
+            ("Moon is?", ["Planet","Star","Satellite","Comet"], "Satellite"),
+            ("Orbit means?", ["Path","Speed","Mass","Energy"], "Path"),
+            ("Comets mostly?", ["Ice","Rock","Metal","Gas"], "Ice")
+        ],
 
-            "Quiz 3": [
-                ("Exoplanet?", ["Outside system", "Inside system", "Moon", "Star"], "Outside system"),
-                ("Albedo?", ["Reflectivity", "Heat", "Mass", "Speed"], "Reflectivity"),
-                ("Habitable zone?", ["Liquid water", "Gas", "Ice", "Metal"], "Liquid water"),
-                ("Temp unit?", ["Kelvin", "Meter", "Second", "Joule"], "Kelvin"),
-                ("Flux?", ["Energy received", "Mass", "Speed", "Distance"], "Energy received")
-            ],
+        "Quiz 3": [
+            ("Exoplanet?", ["Outside system","Inside system","Moon","Star"], "Outside system"),
+            ("Albedo?", ["Reflectivity","Heat","Mass","Speed"], "Reflectivity"),
+            ("Habitable zone?", ["Liquid water","Gas","Ice","Metal"], "Liquid water"),
+            ("Temp unit?", ["Kelvin","Meter","Second","Joule"], "Kelvin"),
+            ("Flux?", ["Energy received","Mass","Speed","Distance"], "Energy received")
+        ],
 
-            "Quiz 4": [
-                ("Sun type?", ["G-type", "M-type", "K-type", "O-type"], "G-type"),
-                ("Closest star?", ["Proxima Centauri", "Sirius", "Vega", "Betelgeuse"], "Proxima Centauri"),
-                ("Speed of light?", ["3e8 m/s", "1e6", "1e3", "1e2"], "3e8 m/s"),
-                ("Orbit shape?", ["Ellipse", "Square", "Triangle", "Line"], "Ellipse"),
-                ("Mars color?", ["Red", "Blue", "Green", "White"], "Red")
-            ],
+        "Quiz 4": [
+            ("Sun type?", ["G-type","M-type","K-type","O-type"], "G-type"),
+            ("Closest star?", ["Proxima Centauri","Sirius","Vega","Betelgeuse"], "Proxima Centauri"),
+            ("Speed of light?", ["3e8 m/s","1e6","1e3","1e2"], "3e8 m/s"),
+            ("Orbit shape?", ["Ellipse","Square","Triangle","Line"], "Ellipse"),
+            ("Mars color?", ["Red","Blue","Green","White"], "Red")
+        ],
 
-            "Quiz 5": [
-                ("TRAPPIST-1 planets?", ["7", "5", "9", "3"], "7"),
-                ("Red dwarfs?", ["Small stars", "Planets", "Gas", "Moons"], "Small stars"),
-                ("Life needs?", ["Water", "Metal", "Dust", "Gas"], "Water"),
-                ("Earth temp?", ["288K", "100K", "500K", "50K"], "288K"),
-                ("Sun age?", ["4.6B", "1B", "10B", "100M"], "4.6B")
-            ],
+        "Quiz 5": [
+            ("TRAPPIST-1 planets?", ["7","5","9","3"], "7"),
+            ("Red dwarfs?", ["Small stars","Planets","Gas","Moons"], "Small stars"),
+            ("Life needs?", ["Water","Metal","Dust","Gas"], "Water"),
+            ("Earth temp?", ["288K","100K","500K","50K"], "288K"),
+            ("Sun age?", ["4.6B","1B","10B","100M"], "4.6B")
+        ],
 
-            "Quiz 6": [
-                ("Jupiter type?", ["Gas giant", "Rocky", "Ice", "Metal"], "Gas giant"),
-                ("Saturn has?", ["Rings", "Moons only", "None", "No gravity"], "Rings"),
-                ("Neptune winds?", ["Fast", "Slow", "None", "Calm"], "Fast"),
-                ("Mercury moons?", ["0", "1", "2", "3"], "0"),
-                ("Venus rotation?", ["Slow", "Fast", "Normal", "None"], "Slow")
-            ],
+        "Quiz 6": [
+            ("Jupiter type?", ["Gas giant","Rocky","Ice","Metal"], "Gas giant"),
+            ("Saturn has?", ["Rings","Moons only","None","No gravity"], "Rings"),
+            ("Neptune winds?", ["Fast","Slow","None","Calm"], "Fast"),
+            ("Mercury moons?", ["0","1","2","3"], "0"),
+            ("Venus rotation?", ["Slow","Fast","Normal","None"], "Slow")
+        ],
 
-            "Quiz 7": [
-                ("Black hole?", ["Gravity trap", "Light", "Energy", "Gas"], "Gravity trap"),
-                ("Supernova?", ["Explosion", "Cooling", "Orbit", "Fusion"], "Explosion"),
-                ("Nebula?", ["Gas cloud", "Planet", "Star", "Rock"], "Gas cloud"),
-                ("Galaxy shape?", ["Spiral", "Square", "Flat", "Triangle"], "Spiral"),
-                ("Dark matter?", ["Invisible", "Visible", "Solid", "Liquid"], "Invisible")
-            ],
+        "Quiz 7": [
+            ("Black hole?", ["Gravity trap","Light","Energy","Gas"], "Gravity trap"),
+            ("Supernova?", ["Explosion","Cooling","Orbit","Fusion"], "Explosion"),
+            ("Nebula?", ["Gas cloud","Planet","Star","Rock"], "Gas cloud"),
+            ("Galaxy shape?", ["Spiral","Square","Flat","Triangle"], "Spiral"),
+            ("Dark matter?", ["Invisible","Visible","Solid","Liquid"], "Invisible")
+        ],
 
-            "Quiz 8": [
-                ("ISS?", ["Space station", "Planet", "Star", "Rocket"], "Space station"),
-                ("Hubble?", ["Telescope", "Planet", "Rocket", "Satellite"], "Telescope"),
-                ("JWST sees?", ["Infrared", "Radio", "X-ray", "UV"], "Infrared"),
-                ("Rocket fuel?", ["Chemical", "Water", "Air", "Electric"], "Chemical"),
-                ("Escape velocity?", ["Min speed", "Mass", "Force", "Energy"], "Min speed")
-            ],
+        "Quiz 8": [
+            ("ISS?", ["Space station","Planet","Star","Rocket"], "Space station"),
+            ("Hubble?", ["Telescope","Planet","Rocket","Satellite"], "Telescope"),
+            ("JWST sees?", ["Infrared","Radio","X-ray","UV"], "Infrared"),
+            ("Rocket fuel?", ["Chemical","Water","Air","Electric"], "Chemical"),
+            ("Escape velocity?", ["Min speed","Mass","Force","Energy"], "Min speed")
+        ],
 
-            "Quiz 9": [
-                ("Orbit shape?", ["Ellipse", "Circle", "Square", "Line"], "Ellipse"),
-                ("Gravity?", ["Force", "Light", "Energy", "Wave"], "Force"),
-                ("Mass unit?", ["kg", "m", "s", "J"], "kg"),
-                ("Distance unit?", ["AU", "kg", "s", "W"], "AU"),
-                ("Time unit?", ["Second", "Meter", "AU", "kg"], "Second")
-            ],
+        "Quiz 9": [
+            ("Orbit shape?", ["Ellipse","Circle","Square","Line"], "Ellipse"),
+            ("Gravity?", ["Force","Light","Energy","Wave"], "Force"),
+            ("Mass unit?", ["kg","m","s","J"], "kg"),
+            ("Distance unit?", ["AU","kg","s","W"], "AU"),
+            ("Time unit?", ["Second","Meter","AU","kg"], "Second")
+        ],
 
-            "Quiz 10": [
-                ("Life needs?", ["Water", "Iron", "Dust", "Gas"], "Water"),
-                ("Gold formed?", ["Supernova", "Earth", "Moon", "Sun"], "Supernova"),
-                ("Hot stars?", ["Blue", "Red", "Yellow", "White"], "Blue"),
-                ("Cool stars?", ["Red", "Blue", "White", "Yellow"], "Red"),
-                ("Universe expanding?", ["Yes", "No", "Maybe", "Unknown"], "Yes")
-            ]
+        "Quiz 10": [
+            ("Life needs?", ["Water","Iron","Dust","Gas"], "Water"),
+            ("Gold formed?", ["Supernova","Earth","Moon","Sun"], "Supernova"),
+            ("Hot stars?", ["Blue","Red","Yellow","White"], "Blue"),
+            ("Cool stars?", ["Red","Blue","White","Yellow"], "Red"),
+            ("Universe expanding?", ["Yes","No","Maybe","Unknown"], "Yes")
+        ]
+
         }
 
         choice = st.selectbox("Choose Quiz", list(quiz_data.keys()))
@@ -271,80 +258,49 @@ with tab2:
 
         answers = []
         for i, (q, opt, ans) in enumerate(qset):
-            answers.append(st.radio(q, opt, key=f"{choice}_{i}_{user}"))
-
-        quiz_key = f"{user}_{choice}"
+            answers.append(st.radio(q, opt, key=f"{choice}_{i}"))
 
         if st.button("Submit Quiz"):
+            score = sum([1 for i,(_,_,ans) in enumerate(qset) if answers[i] == ans])
+            st.success(f"Score {score}/5")
 
-            if st.session_state.quiz_done.get(quiz_key, False):
-                st.warning("Already attempted!")
-            else:
-                score = sum([1 for i, (_, _, ans) in enumerate(qset) if answers[i] == ans])
+            user_data["xp"] += score * 10
+            user_data["completed"] += 1
+            save_data()
 
-                st.success(f"Score: {score}/5")
 
-                xp_gain = score * 10
-                st.session_state.users[user]["xp"] += xp_gain
-
-                if score >= 3:
-                    st.session_state.users[user]["completed"] += 1
-                    st.balloons()
-
-                st.info(f"✨ +{xp_gain} XP")
-
-                st.session_state.quiz_done[quiz_key] = True
-                save_data()
-
-    # ================= TAB 3 =================
-with tab3:
+    # ---------------- TAB 3 ----------------
+    with tab3:
         st.header("🏆 Progress")
+        st.write("XP:", user_data["xp"])
+        st.write("Level:", user_data["xp"] // 100 + 1)
 
-        data = st.session_state.users[user]
 
-        xp = data.get("xp", 0)
-        completed = data.get("completed", 0)
-
-        level = xp // 100 + 1
-
-        st.metric("Level", level)
-        st.metric("XP", xp)
-        st.metric("Completed", completed)
-
-        st.progress((xp % 100) / 100)
-
-    # ================= TAB 4 =================
-with tab4:
+    # ---------------- TAB 4 ----------------
+    with tab4:
         st.header("🥇 Leaderboard")
 
         users = st.session_state.users
+        sorted_users = sorted(users.items(), key=lambda x: x[1]["xp"], reverse=True)
 
-        sorted_users = sorted(users.items(), key=lambda x: x[1].get("xp", 0), reverse=True)
-
-        for i, (username, data) in enumerate(sorted_users):
-            xp = data.get("xp", 0)
-
-            if i == 0:
-                st.success(f"🥇 {username} — {xp} XP")
-            elif i == 1:
-                st.info(f"🥈 {username} — {xp} XP")
-            elif i == 2:
-                st.warning(f"🥉 {username} — {xp} XP")
-            else:
-                st.write(f"{i+1}. {username} — {xp} XP")
-# =====================================================
+        for i,(u,d) in enumerate(sorted_users):
+            st.write(f"{i+1}. {u} - {d['xp']} XP")
+    # =====================================================
 # 🔬 ADVANCED MODE
 # =====================================================
+
 if mode == "🔬 Advanced":
 
     tab1, tab2, tab3 = st.tabs([
         "🪐 Planet Cards",
-        "🌌 Exoplanet System Simulator",
-        "🔥 Calculator"
+        "🌌 Exoplanet Simulator",
+        "🔥 Habitability Calculator"
     ])
 
     # ================= TAB 1: PLANET CARDS =================
-with tab1:
+    with tab1:
+        st.header("🪐 Exoplanet Cards")
+
         planets = [
             {"name": "Kepler-22b", "temp": 262, "type": "Ocean world"},
             {"name": "Proxima Centauri b", "temp": 234, "type": "Rocky"},
@@ -357,289 +313,150 @@ with tab1:
             {"name": "TRAPPIST-1h", "temp": 173, "type": "Frozen"},
             {"name": "Kepler-186f", "temp": 188, "type": "Habitable candidate"},
             {"name": "Kepler-62f", "temp": 208, "type": "Super-Earth"},
-            {"name": "Kepler-62e", "temp": 270, "type": "Ocean world"},
             {"name": "LHS 1140 b", "temp": 230, "type": "Dense rocky"},
             {"name": "Gliese 667 Cc", "temp": 277, "type": "Potentially habitable"},
             {"name": "HD 209458 b", "temp": 1450, "type": "Hot Jupiter"},
             {"name": "WASP-12b", "temp": 2500, "type": "Ultra hot Jupiter"},
-            {"name": "WASP-121b", "temp": 2350, "type": "Evaporating giant"},
             {"name": "55 Cancri e", "temp": 2400, "type": "Lava world"},
-            {"name": "CoRoT-7b", "temp": 1800, "type": "Molten rocky"},
-            {"name": "GJ 1214 b", "temp": 550, "type": "Mini-Neptune"},
-            {"name": "HD 189733 b", "temp": 1200, "type": "Stormy gas giant"}
         ]
 
-        index = st.session_state.get("index", 0)
+        index = st.session_state.get("planet_index", 0)
 
-        col1, col2, col3 = st.columns([1, 2, 1])
+        col1, col2, col3 = st.columns([1,2,1])
 
-        if col1.button("⬅️"):
+        if col1.button("⬅️ Prev"):
             index -= 1
-        if col3.button("➡️"):
+        if col3.button("Next ➡️"):
             index += 1
 
         index = index % len(planets)
-        st.session_state.index = index
+        st.session_state.planet_index = index
 
         p = planets[index]
+
         st.markdown(f"""
-        <div style="border:1px solid #ccc;padding:20px;border-radius:12px;">
-        <h2>{p['name']}</h2>
-        <p>🌡 Temperature: {p['temp']} K</p>
-        <p>🪐 Type: {p['type']}</p>
+        <div style="border:1px solid gray;padding:20px;border-radius:15px;text-align:center;">
+            <h2>{p['name']}</h2>
+            <p>🌡 Temperature: {p['temp']} K</p>
+            <p>🪐 Type: {p['type']}</p>
         </div>
         """, unsafe_allow_html=True)
-# ================= TAB 2: EXOPLANET SYSTEM SIMULATOR =================
-with tab2:
-   import streamlit.components.v1 as components
 
-   st.header("🌌 Exoplanet System Simulator")
 
-   st.markdown("""
-    <style>
-    iframe {
-        background-color: black !important;
-        border-radius: 15px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    # ================= TAB 2: SIMULATOR =================
+    with tab2:
+        st.header("🌌 Exoplanet System Simulator")
 
-   solar_html = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <style>
-    body{
-        margin:0;
-        background:black;
-        overflow:hidden;
-    }
+        import streamlit.components.v1 as components
 
-    .space{
-        position:relative;
-        width:1250px;
-        height:950px;
-        margin:auto;
-        background:black;
-        overflow:hidden;
-    }
+        solar_html = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <style>
+        body {
+            margin:0;
+            background:black;
+            overflow:hidden;
+        }
 
-    .star{
-        position:absolute;
-        background:white;
-        border-radius:50%;
-        animation:twinkle 4s infinite alternate;
-    }
+        .space {
+            width:100%;
+            height:900px;
+            position:relative;
+            background:black;
+        }
 
-    @keyframes twinkle{
-        from{opacity:0.2;}
-        to{opacity:1;}
-    }
+        .sun {
+            position:absolute;
+            top:50%;
+            left:50%;
+            width:70px;
+            height:70px;
+            margin-left:-35px;
+            margin-top:-35px;
+            background:radial-gradient(circle,yellow,orange);
+            border-radius:50%;
+            box-shadow:0 0 120px yellow;
+        }
 
-    .sun{
-        position:absolute;
-        top:50%;
-        left:50%;
-        width:75px;
-        height:75px;
-        margin-left:-37px;
-        margin-top:-37px;
-        background:radial-gradient(circle,yellow,orange,darkorange);
-        border-radius:50%;
-        box-shadow:0 0 140px yellow;
-    }
+        .orbit {
+            position:absolute;
+            top:50%;
+            left:50%;
+            border:1px solid rgba(255,255,255,0.2);
+            border-radius:50%;
+            transform:translate(-50%,-50%);
+            animation:spin linear infinite;
+        }
 
-    .orbit{
-        position:absolute;
-        border:1px solid rgba(255,255,255,0.2);
-        border-radius:50%;
-        top:50%;
-        left:50%;
-        transform:translate(-50%,-50%);
-    }
+        @keyframes spin {
+            from {transform:translate(-50%,-50%) rotate(0deg);}
+            to {transform:translate(-50%,-50%) rotate(360deg);}
+        }
 
-    .planet{
-        position:absolute;
-        border-radius:50%;
-        box-shadow: inset -4px -4px 6px rgba(0,0,0,0.4);
-    }
+        .earth-orbit { width:250px; height:250px; animation-duration:20s; }
+        .mars-orbit { width:320px; height:320px; animation-duration:30s; }
+        .jupiter-orbit { width:450px; height:450px; animation-duration:50s; }
 
-    .label{
-        position:absolute;
-        color:white;
-        font-size:12px;
-        left:20px;
-        top:-2px;
-    }
+        .planet {
+            position:absolute;
+            top:50%;
+            left:100%;
+            width:12px;
+            height:12px;
+            border-radius:50%;
+        }
 
-    .mercury-orbit{width:130px;height:130px;animation:spin 12s linear infinite;}
-    .venus-orbit{width:200px;height:200px;animation:spin 18s linear infinite;}
-    .earth-orbit{width:270px;height:270px;animation:spin 24s linear infinite;}
-    .mars-orbit{width:340px;height:340px;animation:spin 32s linear infinite;}
-    .jupiter-orbit{width:470px;height:470px;animation:spin 48s linear infinite;}
-    .saturn-orbit{width:610px;height:610px;animation:spin 64s linear infinite;}
-    .uranus-orbit{width:760px;height:760px;animation:spin 82s linear infinite;}
-    .neptune-orbit{width:900px;height:900px;animation:spin 100s linear infinite;}
+        .earth { background:blue; }
+        .mars { background:red; }
+        .jupiter { background:orange; width:20px; height:20px; }
 
-    .mercury{width:10px;height:10px;top:50%;left:-5px;background:gray;}
-    .venus{width:14px;height:14px;top:50%;left:-7px;background:orange;}
-    .earth{width:17px;height:17px;top:50%;left:-8px;background:blue;}
-    .mars{width:13px;height:13px;top:50%;left:-6px;background:red;}
-    .jupiter{width:30px;height:30px;top:50%;left:-15px;background:brown;}
-    .saturn{width:26px;height:26px;top:50%;left:-13px;background:gold;}
-    .uranus{width:21px;height:21px;top:50%;left:-10px;background:lightblue;}
-    .neptune{width:21px;height:21px;top:50%;left:-10px;background:darkblue;}
+        </style>
+        </head>
 
-    /* EARTH SYSTEM */
-    .moon-orbit{
-        position:absolute;
-        width:34px;
-        height:34px;
-        border:1px dashed rgba(255,255,255,0.2);
-        border-radius:50%;
-        top:-8px;
-        left:-8px;
-        animation:spin 5s linear infinite;
-    }
+        <body>
+        <div class="space">
+            <div class="sun"></div>
 
-    .moon{
-        width:5px;
-        height:5px;
-        background:white;
-        border-radius:50%;
-        position:absolute;
-        top:50%;
-        left:-2px;
-    }
+            <div class="orbit earth-orbit">
+                <div class="planet earth"></div>
+            </div>
 
-    .iss-orbit{
-        position:absolute;
-        width:50px;
-        height:50px;
-        border:1px dotted rgba(255,255,255,0.2);
-        border-radius:50%;
-        top:-16px;
-        left:-16px;
-        animation:spin 4s linear infinite;
-    }
+            <div class="orbit mars-orbit">
+                <div class="planet mars"></div>
+            </div>
 
-    .iss{
-        width:8px;
-        height:4px;
-        background:silver;
-        position:absolute;
-        top:50%;
-        left:-4px;
-        box-shadow:0 0 8px white;
-    }
-
-    .hubble-orbit{
-        position:absolute;
-        width:64px;
-        height:64px;
-        border:1px dotted rgba(255,255,255,0.15);
-        border-radius:50%;
-        top:-23px;
-        left:-23px;
-        animation:spin 6s linear infinite;
-    }
-
-    .hubble{
-        width:5px;
-        height:10px;
-        background:silver;
-        position:absolute;
-        top:50%;
-        left:-2px;
-    }
-
-    .comet{
-        position:absolute;
-        width:10px;
-        height:10px;
-        background:red;
-        border-radius:50%;
-        box-shadow:0 0 25px red;
-        animation:move 10s linear infinite;
-    }
-
-    @keyframes move{
-        0%{left:-100px;top:100px;}
-        100%{left:1300px;top:900px;}
-    }
-
-    @keyframes spin{
-        from{transform:translate(-50%,-50%) rotate(0deg);}
-        to{transform:translate(-50%,-50%) rotate(360deg);}
-    }
-    </style>
-    </head>
-
-    <body>
-    <div class="space">
-
-    <script>
-    for(let i=0;i<250;i++){
-        let s=document.createElement('div');
-        s.className='star';
-        s.style.width=(Math.random()*3)+'px';
-        s.style.height=(Math.random()*3)+'px';
-        s.style.top=(Math.random()*950)+'px';
-        s.style.left=(Math.random()*1250)+'px';
-        document.body.appendChild(s);
-    }
-    </script>
-
-    <div class="sun"></div>
-
-    <div class="orbit mercury-orbit"><div class="planet mercury"><div class="label">Mercury</div></div></div>
-    <div class="orbit venus-orbit"><div class="planet venus"><div class="label">Venus</div></div></div>
-
-    <div class="orbit earth-orbit">
-        <div class="planet earth">
-            <div class="label">Earth</div>
-            <div class="moon-orbit"><div class="moon"></div></div>
-            <div class="iss-orbit"><div class="iss"></div></div>
-            <div class="hubble-orbit"><div class="hubble"></div></div>
+            <div class="orbit jupiter-orbit">
+                <div class="planet jupiter"></div>
+            </div>
         </div>
-    </div>
+        </body>
+        </html>
+        """
 
-    <div class="orbit mars-orbit"><div class="planet mars"><div class="label">Mars</div></div></div>
-    <div class="orbit jupiter-orbit"><div class="planet jupiter"><div class="label">Jupiter</div></div></div>
-    <div class="orbit saturn-orbit"><div class="planet saturn"><div class="label">Saturn</div></div></div>
-    <div class="orbit uranus-orbit"><div class="planet uranus"><div class="label">Uranus</div></div></div>
-    <div class="orbit neptune-orbit"><div class="planet neptune"><div class="label">Neptune</div></div></div>
+        components.html(solar_html, height=600)
 
-    <div class="comet"></div>
 
-    </div>
-    </body>
-    </html>
-    """
+    # ================= TAB 3: CALCULATOR =================
+    with tab3:
+        st.header("🔥 Habitability Calculator")
 
-components.html(solar_html, height=980)
-# ================= TAB 3: HABITABILITY CALCULATOR =================
-with tab3:
+        star = st.selectbox("Star Type", ["G-Type", "M-Type"])
+        distance = st.slider("Distance (AU)", 0.1, 5.0, 1.0)
+        albedo = st.slider("Albedo", 0.0, 1.0, 0.3)
 
-    st.header("🔥 Habitability Calculator")
+        L = 1 if star == "G-Type" else 0.04
 
-    star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
-    d = st.slider("Distance (AU)", 0.1, 5.0, 1.0, key="calc_distance")
-    a = st.slider("Albedo", 0.0, 1.0, 0.3, key="calc_albedo")
+        flux = L / (distance ** 2)
+        temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
 
-    # luminosity
-    L = 1 if star == "G-Type" else 0.04
+        st.write("🌟 Flux:", round(flux, 2))
+        st.write("🌡 Temperature:", round(temp, 1))
 
-    # calculations
-    flux = L / (d ** 2)
-    temp = ((flux * (1 - a)) / 4) ** 0.25 * 278
-
-    st.write("🌟 Stellar Flux:", round(flux, 2))
-    st.write("🌡 Equilibrium Temp:", round(temp, 1))
-
-    if temp > 320:
-        st.error("🔥 Too Hot")
-    elif 273 <= temp <= 310:
-        st.success("🌍 Habitable")
-    else:
-        st.warning("❄️ Not Ideal")    
+        if temp > 320:
+            st.error("🔥 Too Hot")
+        elif 273 <= temp <= 310:
+            st.success("🌍 Habitable Zone")
+        else:
+            st.warning("❄️ Too Cold")
