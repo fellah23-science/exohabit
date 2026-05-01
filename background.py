@@ -149,7 +149,7 @@ with tab2:
       user = st.session_state.current_user
 
     # ensure user fields exist
-    if "xp" not in st.session_state.users[user]:
+      if "xp" not in st.session_state.users[user]:
         st.session_state.users[user]["xp"] = 0
         st.session_state.users[user]["completed"] = 0
 
