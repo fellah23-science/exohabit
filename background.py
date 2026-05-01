@@ -1,9 +1,9 @@
 import streamlit as st
-import random
-import math
 import json
 import os
 from datetime import datetime, timedelta
+
+# ================= DATA =================
 def load_data():
     if os.path.exists("users.json"):
         with open("users.json", "r") as f:
@@ -14,14 +14,10 @@ def save_data():
     with open("users.json", "w") as f:
         json.dump(st.session_state.users, f)
 
-st.set_page_config(page_title="ExoHabit", layout="wide")
 
 # ================= INIT =================
 if "users" not in st.session_state:
     st.session_state.users = load_data()
-
-if "leaderboard" not in st.session_state:
-    st.session_state.leaderboard = {}
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -29,8 +25,9 @@ if "logged_in" not in st.session_state:
 if "current_user" not in st.session_state:
     st.session_state.current_user = None
 
-if "index" not in st.session_state:
-    st.session_state.index = 0
+if "show_profile" not in st.session_state:
+    st.session_state.show_profile = False
+
 
 # ================= LOGIN =================
 def login_page():
@@ -42,17 +39,16 @@ def login_page():
     password = st.text_input("Password", type="password")
 
     if option == "Signup":
-     if st.button("Create Account"):
-
-        st.session_state.users[username] = {
-            "password": password,
-            "xp": 0,
-            "completed": 0
-        }
-
-        save_data()  # ✅ MUST BE INSIDE BUTTON
-
-        st.success("Account created!")
+        if st.button("Create Account"):
+            st.session_state.users[username] = {
+                "password": password,
+                "xp": 0,
+                "completed": 0,
+                "streak": 1,
+                "avatar": "🚀"
+            }
+            save_data()
+            st.success("Account created!")
 
     if option == "Login":
         if st.button("Login"):
@@ -72,87 +68,78 @@ if not st.session_state.logged_in:
     st.stop()
 
 
-# ================= SAFE USER =================
+# ================= USER =================
 user = st.session_state.current_user
-if user not in st.session_state.users:
-    st.session_state.logged_in = False
-    st.rerun()
-
 user_data = st.session_state.users[user]
 
-if st.sidebar.button("🔄 Reset All Data"):
-    st.session_state.users = {}
-    save_data()
-    st.success("All data cleared! Refresh the app.")
-    from datetime import datetime
 
-st.sidebar.markdown("## 👤 Your Profile")
+# ================= SIDEBAR BUTTON =================
+if st.sidebar.button("👤 Profile"):
+    st.session_state.show_profile = not st.session_state.show_profile
 
-user_data = st.session_state.users[user]
 
-# Avatar options
-avatars = ["🚀", "🪐", "🌌", "👩‍🚀", "👨‍🚀"]
-
-# set default avatar
-if "avatar" not in user_data:
-    user_data["avatar"] = "🚀"
-
-avatar = st.sidebar.selectbox(
-    "Choose Avatar",
-    avatars,
-    index=avatars.index(user_data["avatar"])
-)
-
-user_data["avatar"] = avatar
-
-# XP + Level
-xp = user_data.get("xp", 0)
-level = xp // 100 + 1
-completed = user_data.get("completed", 0)
-
-st.sidebar.markdown(f"""
-<div style="text-align:center;">
-    <h1>{avatar}</h1>
-    <h3>{user}</h3>
-</div>
-""", unsafe_allow_html=True)
-
-st.sidebar.metric("⭐ XP", xp)
-st.sidebar.metric("🎯 Level", level)
-st.sidebar.metric("🧠 Quizzes", completed)
-
-save_data()
 # ================= STREAK SYSTEM =================
 today = datetime.now().date()
 
 if "last_login" not in user_data:
     user_data["last_login"] = str(today)
     user_data["streak"] = 1
-
 else:
     last_login = datetime.strptime(user_data["last_login"], "%Y-%m-%d").date()
 
     if today == last_login:
-        pass  # already logged today
-
+        pass
     elif today == last_login + timedelta(days=1):
         user_data["streak"] += 1
-
-        st.sidebar.success(f"🔥 Streak: {user_data['streak']} days!")
-
-        # bonus XP
-        bonus = 10 * user_data["streak"]
+        bonus = 5 * user_data["streak"]
         user_data["xp"] += bonus
-        st.sidebar.info(f"+{bonus} XP streak bonus!")
-
+        st.sidebar.success(f"+{bonus} XP 🔥")
     else:
         user_data["streak"] = 1
 
     user_data["last_login"] = str(today)
 
-st.sidebar.markdown(f"🔥 Streak: {user_data.get('streak',1)} days")
-
 save_data()
+
+
+# ================= PROFILE PAGE =================
+if st.session_state.show_profile:
+
+    st.title("👤 My Profile")
+
+    avatars = ["🚀","🪐","🌌","👩‍🚀","👨‍🚀"]
+
+    user_data["avatar"] = st.selectbox(
+        "Choose Avatar",
+        avatars,
+        index=avatars.index(user_data.get("avatar","🚀"))
+    )
+
+    xp = user_data.get("xp", 0)
+    level = xp // 100 + 1
+    completed = user_data.get("completed", 0)
+    streak = user_data.get("streak", 1)
+
+    # Center display
+    st.markdown(f"""
+    <div style="text-align:center;">
+        <h1 style="font-size:70px;">{user_data['avatar']}</h1>
+        <h2>{user}</h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric("⭐ XP", xp)
+    col2.metric("🎯 Level", level)
+    col3.metric("🔥 Streak", streak)
+
+    st.progress((xp % 100) / 100)
+
+    st.write("### 🧠 Quizzes Completed:", completed)
+
+    save_data()
+
+    st.stop()   # 🚨 VERY IMPORTANT
 
 mode = st.sidebar.radio("Mode", ["🌟 Basic", "🔬 Advanced"])
 
