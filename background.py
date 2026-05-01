@@ -338,27 +338,26 @@ with tab4:
             bg = colors[i]
         else:
             bg = "#2d3436"
+           st.markdown(f"""
+<div style="
+    background:#2d3436;
+    padding:15px;
+    border-radius:12px;
+    margin:10px 0;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+">
+    <div>
+        {i+1}. {avatar} {name}
+    </div>
 
-        st.markdown(f"""
-        <div style="
-            background:{bg};
-            padding:15px;
-            border-radius:12px;
-            margin:10px 0;
-            color:white;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        ">
-            <div style="font-size:20px;">
-                {i+1}. {avatar} {name}
-            </div>
-
-            <div>
-                ⭐ XP: {xp} | 🎯 Lv: {level}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    <div>
+        ⭐ XP: {xp} | 🎯 Lv: {level}
+    </div>
+</div>
+""", unsafe_allow_html=True)
+       
 # 🔬 ADVANCED MODE
 # =====================================================
 
