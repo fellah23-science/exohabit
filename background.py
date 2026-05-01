@@ -324,39 +324,36 @@ with tab4:
     st.header("🥇 Leaderboard")
 
     users = st.session_state.users
-    sorted_users = sorted(users.items(), key=lambda x: x[1].get("xp", 0), reverse=True)
 
-    colors = ["#FFD700", "#C0C0C0", "#CD7F32"]  # gold, silver, bronze
+    # sort by XP
+    sorted_users = sorted(
+        users.items(),
+        key=lambda x: x[1].get("xp", 0),
+        reverse=True
+    )
 
     for i, (name, data) in enumerate(sorted_users):
-
         xp = data.get("xp", 0)
         level = xp // 100 + 1
         avatar = data.get("avatar", "🚀")
 
-        if i < 3:
-            bg = colors[i]
+        # rank emoji
+        if i == 0:
+            rank = "🥇"
+        elif i == 1:
+            rank = "🥈"
+        elif i == 2:
+            rank = "🥉"
         else:
-            bg = "#2d3436"
-            st.markdown(f"""
-<div style="
-    background:#2d3436;
-    padding:15px;
-    border-radius:12px;
-    margin:10px 0;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-">
-    <div>
-        {i+1}. {avatar} {name}
-    </div>
+            rank = f"{i+1}."
 
-    <div>
-        ⭐ XP: {xp} | 🎯 Lv: {level}
-    </div>
-</div>
-""", unsafe_allow_html=True)
+        # simple box using Streamlit
+        st.container()
+        col1, col2, col3 = st.columns([2, 1, 1])
+
+        col1.write(f"{rank} {avatar} {name}")
+        col2.write(f"⭐ XP: {xp}")
+        col3.write(f"🎯 Lv: {level}")
        
 # 🔬 ADVANCED MODE
 # =====================================================
