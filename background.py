@@ -389,8 +389,9 @@ if mode == "🔬 Advanced":
         <p>🪐 Type: {p['type']}</p>
         </div>
         """, unsafe_allow_html=True)
-# ================= TAB 2 =================
+# ================= TAB 2: EXOPLANET SYSTEM SIMULATOR =================
 with tab2:
+
     import streamlit.components.v1 as components
 
     st.header("🌌 Exoplanet System Simulator")
@@ -490,7 +491,7 @@ with tab2:
     .uranus{width:21px;height:21px;top:50%;left:-10px;background:lightblue;}
     .neptune{width:21px;height:21px;top:50%;left:-10px;background:darkblue;}
 
-    /* EARTH SYSTEMS */
+    /* EARTH SYSTEM */
     .moon-orbit{
         position:absolute;
         width:34px;
@@ -553,7 +554,6 @@ with tab2:
         left:-2px;
     }
 
-    /* COMET */
     .comet{
         position:absolute;
         width:10px;
@@ -599,11 +599,9 @@ with tab2:
     <div class="orbit earth-orbit">
         <div class="planet earth">
             <div class="label">Earth</div>
-
             <div class="moon-orbit"><div class="moon"></div></div>
             <div class="iss-orbit"><div class="iss"></div></div>
             <div class="hubble-orbit"><div class="hubble"></div></div>
-
         </div>
     </div>
 
@@ -621,25 +619,28 @@ with tab2:
     """
 
     components.html(solar_html, height=980)
-  with tab3:
-   st.header("🔥 Habitability Calculator")
-  star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
-  d = st.slider("Distance (AU)", 0.1, 5.0, 1.0, key="calc_distance")
-  a = st.slider("Albedo", 0.0, 1.0, 0.3, key="calc_albedo")
+# ================= TAB 3: HABITABILITY CALCULATOR =================
+with tab3:
 
-    # luminosity 
-  L = 1 if star == "G-Type" else 0.04
+    st.header("🔥 Habitability Calculator")
+
+    star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
+    d = st.slider("Distance (AU)", 0.1, 5.0, 1.0, key="calc_distance")
+    a = st.slider("Albedo", 0.0, 1.0, 0.3, key="calc_albedo")
+
+    # luminosity
+    L = 1 if star == "G-Type" else 0.04
 
     # calculations
-  flux = L / (d ** 2)
-  temp = ((flux * (1 - a)) / 4) ** 0.25 * 278
+    flux = L / (d ** 2)
+    temp = ((flux * (1 - a)) / 4) ** 0.25 * 278
 
-  st.write("Stellar Flux:", round(flux, 2))
-  st.write("Equilibrium Temp:", round(temp, 1))
+    st.write("🌟 Stellar Flux:", round(flux, 2))
+    st.write("🌡 Equilibrium Temp:", round(temp, 1))
 
-  if temp > 320:
+    if temp > 320:
         st.error("🔥 Too Hot")
-  elif 273 <= temp <= 310:
+    elif 273 <= temp <= 310:
         st.success("🌍 Habitable")
-  else:
-        st.warning("❄️ Not Ideal")
+    else:
+        st.warning("❄️ Not Ideal")    
