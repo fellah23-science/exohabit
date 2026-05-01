@@ -248,33 +248,42 @@ with tab2:
         answers.append(
             st.radio(q, opt, key=f"{choice}_{i}_{user}")
         )
+if "quiz_done" not in st.session_state:
+    st.session_state.quiz_done = {}
 
-    if st.button("Submit Quiz"):
+quiz_key = f"{user}_{choice}"
 
-        score = 0
+if st.button("Submit Quiz"):
 
-        for i, (q, opt, ans) in enumerate(qset):
-            if answers[i] == ans:
-                score += 1
+    # ❌ prevent double XP
+    if st.session_state.quiz_done.get(quiz_key, False):
+        st.warning("Quiz already submitted. Reload to try again.")
+        st.stop()
 
-        # safety (NEVER exceed 5)
-        score = max(0, min(score, 5))
+    score = 0
 
-        st.success(f"Score: {score}/5")
+    for i, (q, opt, ans) in enumerate(qset):
+        if answers[i] == ans:
+            score += 1
 
-        # XP SYSTEM (FIXED)
-        xp_gain = score * 10
-        st.session_state.users[user]["xp"] += xp_gain
+    score = max(0, min(score, 5))
 
-        # completion tracking
-        if score >= 3:
-            st.session_state.users[user]["completed"] += 1
-            st.balloons()
+    st.success(f"Score: {score}/5")
 
-        st.info(f"✨ You earned {xp_gain} XP!")
+    xp_gain = score * 10
+    st.session_state.users[user]["xp"] += xp_gain
 
-        # SAVE DATA
-        save_data()
+    if score >= 3:
+        st.session_state.users[user]["completed"] += 1
+        st.balloons()
+
+    st.info(f"✨ You earned {xp_gain} XP!")
+
+    # 🔒 LOCK THIS QUIZ ATTEMPT
+    st.session_state.quiz_done[quiz_key] = True
+
+    save_data()
+    
     # -------- PROGRESS --------
     with tab3:
         st.header("🏆 Progress, Level & Badges")
