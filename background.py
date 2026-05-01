@@ -713,11 +713,10 @@ with tab2:
         </html>
         """
 
-        components.html(solar_html, height=980)
+components.html(solar_html, height=980)
   
 
-        st.subheader("🌌 Planetarium View")
-
+        
 
     # ================= 🌌 EXOPLANET SYSTEMS =================
     else:
