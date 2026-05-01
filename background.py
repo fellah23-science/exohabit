@@ -542,5 +542,5 @@ with tab3:
         st.error("🔥 Too Hot")
   elif 273 <= temp <= 310:
         st.success("🌍 Habitable")
-    else:
+  else:
         st.warning("❄️ Not Ideal")
