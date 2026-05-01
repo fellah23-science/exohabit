@@ -419,7 +419,7 @@ with tab2:
 
       st.subheader("🌌 Planetarium View")
 
-        solar_html = """
+      solar_html = """
         <!DOCTYPE html>
         <html>
         <head>
