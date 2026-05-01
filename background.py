@@ -716,7 +716,7 @@ with tab2:
     components.html(solar_html, height=980)
 
 
-        st.subheader("☀️ Real Solar System View")
+    st.subheader("☀️ Real Solar System View")
 
         solar_html = """ YOUR SOLAR SYSTEM HTML (UNCHANGED) """
         components.html(solar_html, height=950)
