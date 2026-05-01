@@ -151,7 +151,7 @@ if mode == "🌟 Basic":
     tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
 
     # ================= TAB 1 =================
-    with tab1:
+with tab1:
         st.header("🌍 Create Your Planet")
 
         star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
@@ -171,7 +171,7 @@ if mode == "🌟 Basic":
         st.progress(score)
 
     # ================= TAB 2 (QUIZ) =================
-  with tab2:
+with tab2:
         st.header("🧠 Quiz Zone")
 
         user = st.session_state.current_user
@@ -297,7 +297,7 @@ if mode == "🌟 Basic":
                 save_data()
 
     # ================= TAB 3 =================
-    with tab3:
+with tab3:
         st.header("🏆 Progress")
 
         data = st.session_state.users[user]
