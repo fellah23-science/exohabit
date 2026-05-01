@@ -271,8 +271,8 @@ if mode == "🌟 Basic":
 
     # ---------------- TAB 3 ----------------
     # ================= TAB 3: PROGRESS (CARDS UI) =================
-with tab3:
-    st.header("🏆 Progress Dashboard")
+    with tab3:
+      st.header("🏆 Progress Dashboard")
 
     data = st.session_state.users[user]
 
