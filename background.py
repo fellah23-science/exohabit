@@ -329,7 +329,7 @@ if "quiz_done" not in st.session_state:
             st.write("🛰️ Explorer")
         else:
             st.write("🌍 Beginner")
-     with tab4:
+ with tab4:
         st.header("🥇 Leaderboard")
 
     leaderboard = st.session_state.users
