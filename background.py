@@ -390,16 +390,15 @@ if mode == "🔬 Advanced":
             <p>🪐 Type: {p['type']}</p>
         </div>
         """, unsafe_allow_html=True)
-
 with tab2:
-  st.header("🌌 Exoplanet System Simulator")
+    st.header("🌌 Exoplanet System Simulator")
 
-  system = st.selectbox(
+    system = st.selectbox(
         "Choose System",
         ["TRAPPIST-1", "Kepler-90", "Proxima Centauri"]
     )
 
-     html = """
+    html = """
     <html>
     <body style='background:black;margin:0;overflow:hidden;'>
     <style>
@@ -476,24 +475,24 @@ with tab2:
 
     # ================= SYSTEM DATA =================
     if system == "TRAPPIST-1":
-        base_radii = [40, 55, 70, 90, 110, 130, 150]
+        radii = [40, 55, 70, 90, 110, 130, 150]
         colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white"]
-        names = ["b","c","d","e","f","g","h"]
+        names = ["b", "c", "d", "e", "f", "g", "h"]
 
     elif system == "Kepler-90":
-        base_radii = [35, 50, 65, 85, 110, 140, 170, 210]
-        colors = ["gray","orange","yellow","lightblue","blue","cyan","white","purple"]
-        names = ["b","c","i","d","e","f","g","h"]
+        radii = [35, 50, 65, 85, 110, 140, 170, 210]
+        colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white", "purple"]
+        names = ["b", "c", "i", "d", "e", "f", "g", "h"]
 
-    elif system == "Proxima Centauri":
-        base_radii = [80, 140]
-        colors = ["lightblue","green"]
-        names = ["b","d"]
+    else:  # Proxima Centauri
+        radii = [80, 140]
+        colors = ["lightblue", "green"]
+        names = ["b", "d"]
 
-    # ================= REALISTIC SPEED (KEY UPGRADE) =================
-    for r, c, n in zip(base_radii, colors, names):
+    # ================= RENDER =================
+    for r, c, n in zip(radii, colors, names):
 
-        # Kepler-like scaling
+        # realistic speed (inner faster)
         speed = max(4, int(40 / (r ** 0.5)))
 
         html += f"""
@@ -507,7 +506,11 @@ with tab2:
         </div>
         """
 
-    html += "</div></body></html>"
+    html += """
+    </div>
+    </body>
+    </html>
+    """
 
     st.components.v1.html(html, height=650)
     # ================= TAB 3: CALCULATOR =================
