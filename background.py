@@ -713,7 +713,7 @@ with tab2:
         </html>
         """
 
-        components.html(solar_html, height=950)  
+        components.html(solar_html, height=980)  
 
     # ================= 🌌 OTHER SYSTEMS =================
     else:
