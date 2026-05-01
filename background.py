@@ -241,7 +241,7 @@ if mode == "🌟 Basic":
 
         answers = []
         for i, (q, opt, ans) in enumerate(qset):
-            answers.append(st.radio(q, opt, key=f"{choice}_{i}"))
+            answers.append(st.radio(q, opt,key=f"{choice}_{i}_{user}" ))
 
         if st.button("Submit Quiz"):
             score = 0
