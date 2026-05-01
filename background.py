@@ -532,8 +532,8 @@ with tab3:
   L = 1 if star == "G-Type" else 0.04
 
     # calculations
-    flux = L / (d ** 2)
-    temp = ((flux * (1 - a)) / 4) ** 0.25 * 278
+  flux = L / (d ** 2)
+  temp = ((flux * (1 - a)) / 4) ** 0.25 * 278
 
     st.write("Stellar Flux:", round(flux, 2))
     st.write("Equilibrium Temp:", round(temp, 1))
