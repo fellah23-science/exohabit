@@ -406,7 +406,7 @@ with tab2:
     # ================= ☀️ SOLAR SYSTEM =================
     if system == "Solar System":
          
-    import streamlit.components.v1 as components
+      import streamlit.components.v1 as components
 
         st.markdown("""
             <style>
