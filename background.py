@@ -154,7 +154,7 @@ with tab2:
         st.session_state.users[user]["completed"] = 0
 
     # track completed quizzes
-    if "quiz_done" not in st.session_state:
+       if "quiz_done" not in st.session_state:
         st.session_state.quiz_done = {}
 
     quiz_data = {
