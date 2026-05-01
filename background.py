@@ -359,7 +359,7 @@ if mode == "🔬 Advanced":
         """, unsafe_allow_html=True)
       
     # -------- TRAPPIST --------
-with tab2:
+  with tab2:
     st.header("🌌 Exoplanet System Simulator")
 
     system = st.selectbox(
@@ -419,7 +419,7 @@ with tab2:
 
     st.components.v1.html(html, height=650)
     # -------- CALCULATOR --------
-with tab3:
+   with tab3:
         st.header("🔥 Habitability Calculator")
 
         star = st.selectbox("Star Type", ["G-Type", "M-Type"])
