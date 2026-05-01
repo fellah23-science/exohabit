@@ -395,7 +395,8 @@ with tab2:
 
     system = st.selectbox(
         "Choose System",
-        ["TRAPPIST-1", "Kepler-90", "Proxima Centauri"]
+        ["TRAPPIST-1", "Kepler-90", "Proxima Centauri"],
+        key="sim_system"   # ✅ prevents duplicate error
     )
 
     html = """
@@ -419,14 +420,14 @@ with tab2:
         background: radial-gradient(circle, yellow, orange, red);
         border-radius:50%;
         transform:translate(-50%,-50%);
-        box-shadow:0 0 40px yellow, 0 0 80px orange;
+        box-shadow:0 0 40px yellow;
     }
 
     .orbit-path{
         position:absolute;
         top:50%;
         left:50%;
-        border:1px solid rgba(255,255,255,0.15);
+        border:1px solid rgba(255,255,255,0.2);
         border-radius:50%;
         transform:translate(-50%,-50%);
     }
@@ -436,7 +437,9 @@ with tab2:
         top:50%;
         left:50%;
         transform-origin:center;
-        animation:spin linear infinite;
+        animation-name:spin;
+        animation-timing-function:linear;
+        animation-iteration-count:infinite;
     }
 
     .planet{
@@ -455,20 +458,18 @@ with tab2:
         box-shadow:0 0 10px white;
     }
 
-    ..label{
-    display:none;
-    color:white;
-    font-size:11px;
-    margin-left:8px;
-    background:rgba(0,0,0,0.7);
-    padding:2px 6px;
-    border-radius:6px;
-    white-space:nowrap;
-}
+    .label{
+        display:none;
+        color:white;
+        font-size:11px;
+        margin-left:6px;
+        background:rgba(0,0,0,0.7);
+        padding:2px 5px;
+        border-radius:5px;
+    }
 
-.planet:hover .label{
-    display:block;
-}
+    .planet:hover .label{
+        display:block;
     }
 
     @keyframes spin{
@@ -484,25 +485,24 @@ with tab2:
 
     # ================= SYSTEM DATA =================
     if system == "TRAPPIST-1":
-        radii = [40, 55, 70, 90, 110, 130, 150]
+        radii = [40, 60, 80, 100, 120, 140, 160]
         colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white"]
         names = ["b", "c", "d", "e", "f", "g", "h"]
 
     elif system == "Kepler-90":
-        radii = [35, 50, 65, 85, 110, 140, 170, 210]
+        radii = [35, 55, 75, 95, 120, 150, 180, 210]
         colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white", "purple"]
         names = ["b", "c", "i", "d", "e", "f", "g", "h"]
 
-    else:  # Proxima Centauri
-        radii = [80, 140]
+    else:
+        radii = [90, 150]
         colors = ["lightblue", "green"]
         names = ["b", "d"]
 
     # ================= RENDER =================
     for r, c, n in zip(radii, colors, names):
 
-        # realistic speed (inner faster)
-        speed = max(4, int(40 / (r ** 0.5)))
+        speed = max(5, int(50 / (r ** 0.5)))   # ✅ ensures movement
 
         html += f"""
         <div class='orbit-path' style='width:{r*2}px;height:{r*2}px;'></div>
