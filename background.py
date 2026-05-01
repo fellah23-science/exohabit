@@ -395,19 +395,7 @@ with tab2:
 
     st.header("🌌 Exoplanet System Simulator")
 
-    # ================= ⭐ STAR HELPER =================
-    def generate_stars():
-        stars = ""
-        for _ in range(180):
-            x = random.randint(0, 650)
-            y = random.randint(0, 650)
-            s = random.randint(1, 2)
-            stars += f"<div class='star' style='width:{s}px;height:{s}px;top:{y}px;left:{x}px;'></div>"
-        return stars
-
-    # ================= ☀️ SOLAR SYSTEM =================
-    if system == "Solar System":
-          
+    
      import streamlit.components.v1 as components
 
      st.markdown("""
