@@ -40,7 +40,7 @@ def login_page():
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
 
-   if option == "Signup":
+    if option == "Signup":
     if st.button("Create Account"):
 
         st.session_state.users[username] = {
