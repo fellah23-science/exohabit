@@ -344,7 +344,7 @@ if mode == "🔬 Advanced":
     ])
 
     # ================= TAB 1: PLANET CARDS =================
-   with tab1:
+with tab1:
         planets = [
             {"name": "Kepler-22b", "temp": 262, "type": "Ocean world"},
             {"name": "Proxima Centauri b", "temp": 234, "type": "Rocky"},
