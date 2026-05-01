@@ -406,7 +406,7 @@ with tab2:
 
         st.subheader("☀️ Real Solar System View")
 
-      import streamlit.components.v1 as components
+        import streamlit.components.v1 as components
 
         st.markdown("""
             <style>
