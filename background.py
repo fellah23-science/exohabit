@@ -722,8 +722,7 @@ with tab2:
         </body>
         </html>
         """
-
-           components.html(solar_html, height=980)
+components.html(solar_html, height=980)
  
 
       
