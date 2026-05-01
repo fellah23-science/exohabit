@@ -528,8 +528,8 @@ with tab3:
   d = st.slider("Distance (AU)", 0.1, 5.0, 1.0, key="calc_distance")
   a = st.slider("Albedo", 0.0, 1.0, 0.3, key="calc_albedo")
 
-    # luminosity
-    L = 1 if star == "G-Type" else 0.04
+    # luminosity 
+  L = 1 if star == "G-Type" else 0.04
 
     # calculations
     flux = L / (d ** 2)
