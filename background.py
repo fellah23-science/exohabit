@@ -849,8 +849,7 @@ html += """
 </body>
 </html>
 """ 
-
-        components.html(html, height=650)
+components.html(html, height=650)
 with tab3:
   st.header("🔥 Habitability Calculator")
   star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
