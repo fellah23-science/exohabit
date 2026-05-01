@@ -527,9 +527,8 @@ with tab2:
         st.header("🔥 Habitability Calculator")
 
         star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
-        d = st.slider("Distance (AU)", 0.1, 5.0, 1.0)
-        a = st.slider("Albedo", 0.0, 1.0, 0.3)
-
+        st.slider("Distance (AU)", 0.1, 5.0, 1.0, key="calc_distance")
+        st.slider("Albedo", 0.0, 1.0, 0.3, key="calc_albedo")
         L = 1 if star == "G-Type" else 0.04
         flux = L / (d ** 2)
         temp = ((flux * (1 - a)) / 4) ** 0.25 * 278
