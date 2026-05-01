@@ -396,8 +396,7 @@ with tab2:
     
     st.header("🌌 Exoplanet System Simulator")
 
-
-     st.markdown("""
+    st.markdown("""
             <style>
             iframe {
                 background-color: black !important;
