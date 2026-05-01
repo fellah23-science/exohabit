@@ -844,7 +844,7 @@ for i, (r, c, n) in enumerate(zip(radii, colors, names)):
         </div>
     </div>
     """
- html += """
+html += """
 </div>
 </body>
 </html>
