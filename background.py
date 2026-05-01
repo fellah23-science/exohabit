@@ -344,7 +344,7 @@ if mode == "🔬 Advanced":
     ])
 
     # ================= TAB 1: PLANET CARDS =================
-    with tab1:
+   with tab1:
         planets = [
             {"name": "Kepler-22b", "temp": 262, "type": "Ocean world"},
             {"name": "Proxima Centauri b", "temp": 234, "type": "Rocky"},
@@ -390,9 +390,8 @@ if mode == "🔬 Advanced":
         </div>
         """, unsafe_allow_html=True)
 # ================= TAB 2: EXOPLANET SYSTEM SIMULATOR =================
-with tab2:
-
-    import streamlit.components.v1 as components
+ with tab2:
+   import streamlit.components.v1 as components
 
     st.header("🌌 Exoplanet System Simulator")
 
