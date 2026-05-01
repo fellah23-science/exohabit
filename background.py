@@ -391,137 +391,489 @@ if mode == "🔬 Advanced":
         </div>
         """, unsafe_allow_html=True)
 with tab2:
+    import streamlit.components.v1 as components
+
     st.header("🌌 Exoplanet System Simulator")
 
     system = st.selectbox(
         "Choose System",
-        ["TRAPPIST-1", "Kepler-90", "Proxima Centauri"],
-        key="sim_system"   # ✅ prevents duplicate error
+        ["TRAPPIST-1", "Kepler-90", "Proxima Centauri", "Solar System"],
+        key="sim_system"
     )
 
-    html = """
-    <html>
-    <body style='background:black;margin:0;overflow:hidden;'>
-    <style>
+    # ================= ☀️ SOLAR SYSTEM =================
+    if system == "Solar System":
 
-    .container{
-        position:relative;
-        width:600px;
-        height:600px;
-        margin:auto;
-    }
+        st.subheader("☀️ Real Solar System View")
 
-    .star{
-        position:absolute;
-        top:50%;
-        left:50%;
-        width:20px;
-        height:20px;
-        background: radial-gradient(circle, yellow, orange, red);
-        border-radius:50%;
-        transform:translate(-50%,-50%);
-        box-shadow:0 0 40px yellow;
-    }
+      import streamlit.components.v1 as components
 
-    .orbit-path{
-        position:absolute;
-        top:50%;
-        left:50%;
-        border:1px solid rgba(255,255,255,0.2);
-        border-radius:50%;
-        transform:translate(-50%,-50%);
-    }
+        st.markdown("""
+            <style>
+            iframe {
+                background-color: black !important;
+                border-radius: 15px;
+            }
+            </style>
+        """, unsafe_allow_html=True)
 
-    .orbit{
-        position:absolute;
-        top:50%;
-        left:50%;
-        transform-origin:center;
-        animation-name:spin;
-        animation-timing-function:linear;
-        animation-iteration-count:infinite;
-    }
+        st.subheader("🌌 Planetarium View")
 
-    .planet{
-        position:absolute;
-        top:0;
-        left:0;
-        transform:translateX(var(--r));
-        display:flex;
-        align-items:center;
-    }
+        solar_html = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <style>
+        body{
+            margin:0;
+            background:black;
+            overflow:hidden;
+        }
 
-    .dot{
-        width:10px;
-        height:10px;
-        border-radius:50%;
-        box-shadow:0 0 10px white;
-    }
+        .space{
+            position:relative;
+            width:1250px;
+            height:950px;
+            margin:auto;
+            background:black;
+            overflow:hidden;
+        }
 
-    .label{
-        display:none;
-        color:white;
-        font-size:11px;
-        margin-left:6px;
-        background:rgba(0,0,0,0.7);
-        padding:2px 5px;
-        border-radius:5px;
-    }
+        .star{
+            position:absolute;
+            background:white;
+            border-radius:50%;
+            animation:twinkle 4s infinite alternate;
+        }
 
-    .planet:hover .label{
-        display:block;
-    }
+        @keyframes twinkle{
+            from{opacity:0.25;}
+            to{opacity:1;}
+        }
 
-    @keyframes spin{
-        from{transform:rotate(0deg);}
-        to{transform:rotate(360deg);}
-    }
+        .sun{
+            position:absolute;
+            top:50%;
+            left:50%;
+            width:75px;
+            height:75px;
+            margin-left:-37px;
+            margin-top:-37px;
+            background:radial-gradient(circle,yellow,orange,darkorange);
+            border-radius:50%;
+            box-shadow:0 0 140px yellow;
+        }
 
-    </style>
+        .orbit{
+            position:absolute;
+            border:1px solid rgba(255,255,255,0.22);
+            border-radius:50%;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+        }
 
-    <div class='container'>
-        <div class='star'></div>
-    """
+        .planet{
+            position:absolute;
+            border-radius:50%;
+            transition:0.3s;
+            box-shadow: inset -4px -4px 6px rgba(0,0,0,0.45);
+        }
 
-    # ================= SYSTEM DATA =================
-    if system == "TRAPPIST-1":
-        radii = [40, 60, 80, 100, 120, 140, 160]
-        colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white"]
-        names = ["b", "c", "d", "e", "f", "g", "h"]
+        .planet:hover{
+            transform:scale(1.35);
+            box-shadow:0 0 22px white;
+        }
 
-    elif system == "Kepler-90":
-        radii = [35, 55, 75, 95, 120, 150, 180, 210]
-        colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white", "purple"]
-        names = ["b", "c", "i", "d", "e", "f", "g", "h"]
+        .label{
+            position:absolute;
+            color:white;
+            font-size:12px;
+            left:24px;
+            top:-2px;
+            white-space:nowrap;
+        }
 
-    else:
-        radii = [90, 150]
-        colors = ["lightblue", "green"]
-        names = ["b", "d"]
+        .mercury-orbit{width:130px;height:130px;animation:spin 12s linear infinite;}
+        .venus-orbit{width:200px;height:200px;animation:spin 18s linear infinite;}
+        .earth-orbit{width:270px;height:270px;animation:spin 24s linear infinite;}
+        .mars-orbit{width:340px;height:340px;animation:spin 32s linear infinite;}
+        .jupiter-orbit{width:470px;height:470px;animation:spin 48s linear infinite;}
+        .saturn-orbit{width:610px;height:610px;animation:spin 64s linear infinite;}
+        .uranus-orbit{width:760px;height:760px;animation:spin 82s linear infinite;}
+        .neptune-orbit{width:900px;height:900px;animation:spin 100s linear infinite;}
 
-    # ================= RENDER =================
-    for r, c, n in zip(radii, colors, names):
+        .mercury{width:10px;height:10px;top:50%;left:-5px;background:radial-gradient(circle,lightgray,gray);}
+        .venus{width:14px;height:14px;top:50%;left:-7px;background:radial-gradient(circle,#ffd27f,orange);}
+        .earth{width:17px;height:17px;top:50%;left:-8px;background:radial-gradient(circle,#66ccff,blue);}
+        .mars{width:13px;height:13px;top:50%;left:-6px;background:radial-gradient(circle,#ff9999,red);}
+        .jupiter{width:30px;height:30px;top:50%;left:-15px;background:radial-gradient(circle,#d2b48c,brown);}
+        .saturn{width:26px;height:26px;top:50%;left:-13px;background:radial-gradient(circle,#ffe680,gold);}
+        .uranus{width:21px;height:21px;top:50%;left:-10px;background:radial-gradient(circle,#ccffff,lightblue);}
+        .neptune{width:21px;height:21px;top:50%;left:-10px;background:radial-gradient(circle,#6699ff,darkblue);}
 
-        speed = max(5, int(50 / (r ** 0.5)))   # ✅ ensures movement
+        .ring{
+            position:absolute;
+            width:38px;
+            height:12px;
+            border:2px solid rgba(255,255,255,0.45);
+            border-radius:50%;
+            top:7px;
+            left:-6px;
+            transform:rotate(20deg);
+        }
 
-        html += f"""
-        <div class='orbit-path' style='width:{r*2}px;height:{r*2}px;'></div>
+        .moon-orbit{
+            position:absolute;
+            width:34px;
+            height:34px;
+            border:1px dashed rgba(255,255,255,0.15);
+            border-radius:50%;
+            top:-8px;
+            left:-8px;
+            animation:spin 5s linear infinite;
+        }
 
-        <div class='orbit' style='animation-duration:{speed}s;'>
-            <div class='planet' style='--r:{r}px;'>
-                <div class='dot' style='background:{c};'></div>
-                <div class='label'>{system}-{n}</div>
+        .moon{
+            position:absolute;
+            width:5px;
+            height:5px;
+            background:white;
+            border-radius:50%;
+            top:50%;
+            left:-2px;
+        }
+
+        .iss-orbit{
+            position:absolute;
+            width:50px;
+            height:50px;
+            border:1px dotted rgba(255,255,255,0.10);
+            border-radius:50%;
+            top:-16px;
+            left:-16px;
+            animation:spin 4s linear infinite;
+        }
+
+        .iss{
+            position:absolute;
+            width:10px;
+            height:4px;
+            background:silver;
+            top:50%;
+            left:-5px;
+            box-shadow:0 0 8px white;
+        }
+
+        .iss::before{
+            content:'';
+            position:absolute;
+            width:18px;
+            height:2px;
+            background:royalblue;
+            left:-4px;
+            top:1px;
+        }
+
+        .iss::after{
+            content:'';
+            position:absolute;
+            width:2px;
+            height:8px;
+            background:white;
+            left:4px;
+            top:-2px;
+        }
+
+        .hubble-orbit{
+            position:absolute;
+            width:64px;
+            height:64px;
+            border:1px dotted rgba(255,255,255,0.08);
+            border-radius:50%;
+            top:-23px;
+            left:-23px;
+            animation:spin 6s linear infinite;
+        }
+
+        .hubble{
+            position:absolute;
+            width:5px;
+            height:10px;
+            background:silver;
+            top:50%;
+            left:-2px;
+            box-shadow:0 0 6px white;
+        }
+
+        .hubble::before{
+            content:'';
+            position:absolute;
+            width:14px;
+            height:2px;
+            background:royalblue;
+            left:-4px;
+            top:4px;
+        }
+
+        .comet{
+            position:absolute;
+            width:12px;
+            height:12px;
+            background:red;
+            border-radius:50%;
+            box-shadow:0 0 35px red;
+            animation:cometmove 9s linear infinite;
+        }
+
+        .comet-tail{
+            position:absolute;
+            width:90px;
+            height:3px;
+            background:linear-gradient(to left,red,transparent);
+            top:4px;
+            left:-85px;
+        }
+
+        @keyframes cometmove{
+            0%{left:-100px;top:120px;}
+            50%{left:600px;top:350px;}
+            100%{left:1300px;top:850px;}
+        }
+
+        @keyframes spin{
+            from{transform:translate(-50%,-50%) rotate(0deg);}
+            to{transform:translate(-50%,-50%) rotate(360deg);}
+        }
+        </style>
+        </head>
+
+        <body>
+        <div class="space">
+
+        <script>
+        for(let i=0;i<350;i++){
+            let s=document.createElement('div');
+            s.className='star';
+            s.style.width=(Math.random()*3)+'px';
+            s.style.height=(Math.random()*3)+'px';
+            s.style.top=(Math.random()*950)+'px';
+            s.style.left=(Math.random()*1250)+'px';
+            document.currentScript.parentElement.appendChild(s);
+        }
+
+        for(let i=0;i<120;i++){
+            let a=document.createElement('div');
+            a.style.position='absolute';
+            a.style.width='2px';
+            a.style.height='2px';
+            a.style.background='gray';
+            a.style.borderRadius='50%';
+            let angle=Math.random()*360;
+            let r=410+Math.random()*35;
+            let x=625+r*Math.cos(angle*Math.PI/180);
+            let y=475+r*Math.sin(angle*Math.PI/180);
+            a.style.left=x+'px';
+            a.style.top=y+'px';
+            document.currentScript.parentElement.appendChild(a);
+        }
+        </script>
+
+        <div class="sun"></div>
+
+        <div class="orbit mercury-orbit"><div class="planet mercury"><div class="label">Mercury</div></div></div>
+        <div class="orbit venus-orbit"><div class="planet venus"><div class="label">Venus</div></div></div>
+
+        <div class="orbit earth-orbit">
+            <div class="planet earth">
+                <div class="label">Earth</div>
+                <div class="moon-orbit"><div class="moon"></div></div>
+                <div class="iss-orbit"><div class="iss"></div></div>
+                <div class="hubble-orbit"><div class="hubble"></div></div>
             </div>
         </div>
+
+        <div class="orbit mars-orbit"><div class="planet mars"><div class="label">Mars</div></div></div>
+        <div class="orbit jupiter-orbit"><div class="planet jupiter"><div class="label">Jupiter</div></div></div>
+
+        <div class="orbit saturn-orbit">
+            <div class="planet saturn">
+                <div class="ring"></div>
+                <div class="label">Saturn</div>
+            </div>
+        </div>
+
+        <div class="orbit uranus-orbit"><div class="planet uranus"><div class="label">Uranus</div></div></div>
+        <div class="orbit neptune-orbit"><div class="planet neptune"><div class="label">Neptune</div></div></div>
+
+        <div class="comet"><div class="comet-tail"></div></div>
+
+        </div>
+        </body>
+        </html>
         """
 
-    html += """
-    </div>
-    </body>
-    </html>
-    """
+        components.html(solar_html, height=950)  
 
-    st.components.v1.html(html, height=650)
+    # ================= 🌌 OTHER SYSTEMS =================
+    else:
+
+        html = """
+        <html>
+        <body style='background:black;margin:0;overflow:hidden;'>
+
+        <style>
+        .container{
+            position:relative;
+            width:600px;
+            height:600px;
+            margin:auto;
+        }
+
+        .star{
+            position:absolute;
+            top:50%;
+            left:50%;
+            width:20px;
+            height:20px;
+            background: radial-gradient(circle, yellow, orange, red);
+            border-radius:50%;
+            transform:translate(-50%,-50%);
+            box-shadow:0 0 40px yellow;
+        }
+
+        .orbit-path{
+            position:absolute;
+            top:50%;
+            left:50%;
+            border:1px solid rgba(255,255,255,0.2);
+            border-radius:50%;
+            transform:translate(-50%,-50%);
+        }
+
+        .orbit{
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform-origin:center;
+            animation-name:spin;
+            animation-timing-function:linear;
+            animation-iteration-count:infinite;
+        }
+
+        .planet{
+            position:absolute;
+            top:0;
+            left:0;
+            transform:translateX(var(--r));
+        }
+
+        .planet-wrap{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+        }
+
+        .dot{
+            width:10px;
+            height:10px;
+            border-radius:50%;
+            box-shadow:0 0 10px white;
+        }
+
+        .label{
+            color:white;
+            font-size:10px;
+            margin-top:4px;
+            background:rgba(0,0,0,0.6);
+            padding:2px 5px;
+            border-radius:5px;
+            white-space:nowrap;
+        }
+
+        @keyframes spin{
+            from{transform:rotate(0deg);}
+            to{transform:rotate(360deg);}
+        }
+
+        .stars{
+            position:absolute;
+            width:100%;
+            height:100%;
+        }
+
+        .star-dot{
+            position:absolute;
+            width:2px;
+            height:2px;
+            background:white;
+            border-radius:50%;
+            animation:twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle{
+            from{opacity:0.2;}
+            to{opacity:1;}
+        }
+
+        </style>
+
+        <div class='container'>
+        <div class='stars'>
+        """
+
+        import random
+
+        for _ in range(120):
+            x = random.randint(0, 600)
+            y = random.randint(0, 600)
+
+            html += f"<div class='star-dot' style='top:{y}px; left:{x}px;'></div>"
+
+        html += "</div><div class='star'></div>"
+
+        # SYSTEM DATA
+        if system == "TRAPPIST-1":
+            radii = [40, 60, 80, 100, 120, 140, 160]
+            colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white"]
+            names = ["b", "c", "d", "e", "f", "g", "h"]
+
+        elif system == "Kepler-90":
+            radii = [35, 55, 75, 95, 120, 150, 180, 210]
+            colors = ["gray", "orange", "yellow", "lightblue", "blue", "cyan", "white", "purple"]
+            names = ["b", "c", "i", "d", "e", "f", "g", "h"]
+
+        else:
+            radii = [90, 150]
+            colors = ["lightblue", "green"]
+            names = ["b", "d"]
+
+        # RENDER PLANETS
+        for i, (r, c, n) in enumerate(zip(radii, colors, names)):
+            speed = max(5, int(50 / (r ** 0.5)))
+            angle = i * (360 / len(radii))
+
+            html += f"""
+            <div class='orbit-path' style='width:{r*2}px;height:{r*2}px;'></div>
+
+            <div class='orbit'
+                 style='animation-duration:{speed}s;
+                        transform:rotate({angle}deg);'>
+
+                <div class='planet' style='--r:{r}px;'>
+
+                    <div class='planet-wrap'>
+                        <div class='dot' style='background:{c};'></div>
+                        <div class='label'>{system}-{n}</div>
+                    </div>
+
+                </div>
+            </div>
+            """
+
+        html += "</div></body></html>"
+
+        components.html(html, height=650)
 with tab3:
   st.header("🔥 Habitability Calculator")
   star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
