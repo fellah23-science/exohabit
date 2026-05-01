@@ -144,8 +144,7 @@ if mode == "🌟 Basic":
         else:
             st.warning("⚠️ Not Ideal")
 
-    # -------- QUIZ --------
-with tab2:
+    with tab2:
     st.header("🧠 Quiz Zone")
 
     user = st.session_state.current_user
@@ -155,8 +154,11 @@ with tab2:
         st.session_state.users[user]["xp"] = 0
         st.session_state.users[user]["completed"] = 0
 
-    quiz_data = {
+    # track completed quizzes
+    if "quiz_done" not in st.session_state:
+        st.session_state.quiz_done = {}
 
+    quiz_data = {
         "Quiz 1": [
             ("Which planet is closest to the Sun?", ["Mercury", "Venus", "Earth", "Mars"], "Mercury"),
             ("Which is the hottest planet?", ["Earth", "Venus", "Mercury", "Mars"], "Venus"),
@@ -243,46 +245,38 @@ with tab2:
 
     answers = []
 
-    # stable keys (IMPORTANT)
     for i, (q, opt, ans) in enumerate(qset):
-        answers.append(
-            st.radio(q, opt, key=f"{choice}_{i}_{user}")
-        )
-if "quiz_done" not in st.session_state:
-    st.session_state.quiz_done = {}
+        answers.append(st.radio(q, opt, key=f"{choice}_{i}_{user}"))
 
-quiz_key = f"{user}_{choice}"
+    quiz_key = f"{user}_{choice}"
 
-if st.button("Submit Quiz"):
-
-    # ❌ prevent double XP
+    # 🔒 Already completed check
     if st.session_state.quiz_done.get(quiz_key, False):
-        st.warning("Quiz already submitted. Reload to try again.")
-        st.stop()
+        st.success("✅ Already completed! XP already awarded.")
+    else:
+        if st.button("Submit Quiz"):
 
-    score = 0
+            score = 0
+            for i, (q, opt, ans) in enumerate(qset):
+                if answers[i] == ans:
+                    score += 1
 
-    for i, (q, opt, ans) in enumerate(qset):
-        if answers[i] == ans:
-            score += 1
+            score = max(0, min(score, 5))
+            st.success(f"Score: {score}/5")
 
-    score = max(0, min(score, 5))
+            xp_gain = score * 10
+            st.session_state.users[user]["xp"] += xp_gain
 
-    st.success(f"Score: {score}/5")
+            if score >= 3:
+                st.session_state.users[user]["completed"] += 1
+                st.balloons()
 
-    xp_gain = score * 10
-    st.session_state.users[user]["xp"] += xp_gain
+            st.info(f"✨ You earned {xp_gain} XP!")
 
-    if score >= 3:
-        st.session_state.users[user]["completed"] += 1
-        st.balloons()
+            # 🔒 lock quiz
+            st.session_state.quiz_done[quiz_key] = True
 
-    st.info(f"✨ You earned {xp_gain} XP!")
-
-    # 🔒 LOCK THIS QUIZ ATTEMPT
-    st.session_state.quiz_done[quiz_key] = True
-
-    save_data()
+            save_data()
     
     # -------- PROGRESS --------
     with tab3:
