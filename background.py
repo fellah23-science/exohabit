@@ -719,9 +719,9 @@ components.html(solar_html, height=980)
         
 
     # ================= 🌌 EXOPLANET SYSTEMS =================
-else:
+    else:
 
-    st.subheader(f"🌍 {system} System View")
+     st.subheader(f"🌍 {system} System View")
 
     def get_system_data(name):
 
