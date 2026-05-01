@@ -720,7 +720,7 @@ with tab2:
     components.html(solar_html, height=950)
 
     # ================= 🌌 EXOPLANET SYSTEMS =================
-      else:
+else:
 
         st.subheader("🌍 Exoplanet System View")
 
