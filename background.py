@@ -393,9 +393,9 @@ with tab1:
 with tab2:
    import streamlit.components.v1 as components
 
-    st.header("🌌 Exoplanet System Simulator")
+   st.header("🌌 Exoplanet System Simulator")
 
-    st.markdown("""
+   st.markdown("""
     <style>
     iframe {
         background-color: black !important;
