@@ -723,13 +723,13 @@ with tab2:
         </html>
         """
 
-    components.html(solar_html, height=980)
+           components.html(solar_html, height=980)
  
 
       
 
     # ================= 🌌 EXOPLANET SYSTEMS =================
-else:
+     else:
 
         st.subheader(f"🌍 {system} System View")
 
