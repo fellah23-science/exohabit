@@ -3,6 +3,7 @@ import random
 import math
 import json
 import os
+from datetime import datetime, timedelta
 def load_data():
     if os.path.exists("users.json"):
         with open("users.json", "r") as f:
@@ -83,6 +84,75 @@ if st.sidebar.button("🔄 Reset All Data"):
     st.session_state.users = {}
     save_data()
     st.success("All data cleared! Refresh the app.")
+    from datetime import datetime
+
+st.sidebar.markdown("## 👤 Your Profile")
+
+user_data = st.session_state.users[user]
+
+# Avatar options
+avatars = ["🚀", "🪐", "🌌", "👩‍🚀", "👨‍🚀"]
+
+# set default avatar
+if "avatar" not in user_data:
+    user_data["avatar"] = "🚀"
+
+avatar = st.sidebar.selectbox(
+    "Choose Avatar",
+    avatars,
+    index=avatars.index(user_data["avatar"])
+)
+
+user_data["avatar"] = avatar
+
+# XP + Level
+xp = user_data.get("xp", 0)
+level = xp // 100 + 1
+completed = user_data.get("completed", 0)
+
+st.sidebar.markdown(f"""
+<div style="text-align:center;">
+    <h1>{avatar}</h1>
+    <h3>{user}</h3>
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.metric("⭐ XP", xp)
+st.sidebar.metric("🎯 Level", level)
+st.sidebar.metric("🧠 Quizzes", completed)
+
+save_data()
+# ================= STREAK SYSTEM =================
+today = datetime.now().date()
+
+if "last_login" not in user_data:
+    user_data["last_login"] = str(today)
+    user_data["streak"] = 1
+
+else:
+    last_login = datetime.strptime(user_data["last_login"], "%Y-%m-%d").date()
+
+    if today == last_login:
+        pass  # already logged today
+
+    elif today == last_login + timedelta(days=1):
+        user_data["streak"] += 1
+
+        st.sidebar.success(f"🔥 Streak: {user_data['streak']} days!")
+
+        # bonus XP
+        bonus = 10 * user_data["streak"]
+        user_data["xp"] += bonus
+        st.sidebar.info(f"+{bonus} XP streak bonus!")
+
+    else:
+        user_data["streak"] = 1
+
+    user_data["last_login"] = str(today)
+
+st.sidebar.markdown(f"🔥 Streak: {user_data.get('streak',1)} days")
+
+save_data()
 
 mode = st.sidebar.radio("Mode", ["🌟 Basic", "🔬 Advanced"])
 
