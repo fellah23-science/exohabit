@@ -455,11 +455,20 @@ with tab2:
         box-shadow:0 0 10px white;
     }
 
-    .label{
-        color:white;
-        font-size:10px;
-        margin-left:5px;
-        opacity:0.7;
+    ..label{
+    display:none;
+    color:white;
+    font-size:11px;
+    margin-left:8px;
+    background:rgba(0,0,0,0.7);
+    padding:2px 6px;
+    border-radius:6px;
+    white-space:nowrap;
+}
+
+.planet:hover .label{
+    display:block;
+}
     }
 
     @keyframes spin{
@@ -517,7 +526,7 @@ with tab2:
     with tab3:
         st.header("🔥 Habitability Calculator")
 
-        star = st.selectbox("Star Type", ["G-Type", "M-Type"])
+        star = st.selectbox("Star Type", ["G-Type", "M-Type"], key="calc_star")
         d = st.slider("Distance (AU)", 0.1, 5.0, 1.0)
         a = st.slider("Albedo", 0.0, 1.0, 0.3)
 
