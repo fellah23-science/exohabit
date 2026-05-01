@@ -717,7 +717,7 @@ with tab2:
 
 
     st.subheader("☀️ Real Solar System View")
-        components.html(solar_html, height=950)
+    components.html(solar_html, height=950)
 
     # ================= 🌌 EXOPLANET SYSTEMS =================
     else:
