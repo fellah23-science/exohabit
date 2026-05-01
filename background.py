@@ -729,7 +729,7 @@ with tab2:
       
 
     # ================= 🌌 EXOPLANET SYSTEMS =================
-     else:
+      else:
 
         st.subheader(f"🌍 {system} System View")
 
