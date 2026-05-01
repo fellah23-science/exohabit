@@ -40,17 +40,18 @@ def login_page():
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
 
-    if option == "Signup":
-     if st.button("Create Account"):
-    
-       st.session_state.users[username] = {
-        "password": password,
-        "xp": 0,
-        "completed": 0
-    }
-       st.success("Account created!")   
+   if option == "Signup":
+    if st.button("Create Account"):
 
-    save_data()   # ✅ RIGHT HERE
+        st.session_state.users[username] = {
+            "password": password,
+            "xp": 0,
+            "completed": 0
+        }
+
+        save_data()  # ✅ MUST BE INSIDE BUTTON
+
+        st.success("Account created!")
 
     if option == "Login":
         if st.button("Login"):
@@ -244,7 +245,7 @@ if mode == "🌟 Basic":
             answers.append(st.radio(q, opt,key=f"{choice}_{i}_{user}" ))
 
         if st.button("Submit Quiz"):
-         score = 0
+    score = 0
 
     for i, (q, opt, ans) in enumerate(qset):
         if answers[i] == ans:
