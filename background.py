@@ -94,7 +94,7 @@ if mode == "🌟 Basic":
     tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
 
     # -------- CREATE PLANET --------
-with tab1:
+    with tab1:
         st.header("🌍 Create Your Planet (Fixed System)")
 
         star_type = st.selectbox(
@@ -153,7 +153,7 @@ if "quiz_done" not in st.session_state:
     st.session_state.quiz_done = {}
 
   # ---------------- QUIZ TAB ----------------
-with tab2:
+  with tab2:
     st.header("🧠 Quiz Zone")
 
     user = st.session_state.current_user
