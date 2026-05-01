@@ -48,6 +48,7 @@ def login_page():
         "xp": 0,
         "completed": 0
     }
+       st.success("Account created!")   
 
     save_data()   # ✅ RIGHT HERE
 
