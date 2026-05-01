@@ -79,6 +79,11 @@ if user not in st.session_state.users:
 
 user_data = st.session_state.users[user]
 
+if st.sidebar.button("🔄 Reset All Data"):
+    st.session_state.users = {}
+    save_data()
+    st.success("All data cleared! Refresh the app.")
+
 mode = st.sidebar.radio("Mode", ["🌟 Basic", "🔬 Advanced"])
 
 # =====================================================
