@@ -41,9 +41,9 @@ def login_page():
     password = st.text_input("Password", type="password")
 
     if option == "Signup":
-        if st.button("Create Account"):
-
-    st.session_state.users[username] = {
+    if st.button("Create Account"):
+    
+     st.session_state.users[username] = {
         "password": password,
         "xp": 0,
         "completed": 0
