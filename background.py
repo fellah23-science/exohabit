@@ -146,7 +146,7 @@ if mode == "🌟 Basic":
 with tab2:
       st.header("🧠 Quiz Zone")
 
-    user = st.session_state.current_user
+      user = st.session_state.current_user
 
     # ensure user fields exist
     if "xp" not in st.session_state.users[user]:
