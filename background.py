@@ -94,7 +94,7 @@ if mode == "🌟 Basic":
     tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
 
     # -------- CREATE PLANET --------
-   with tab1:
+with tab1:
         st.header("🌍 Create Your Planet (Fixed System)")
 
         star_type = st.selectbox(
