@@ -405,6 +405,17 @@ with tab2:
 
     # ================= ☀️ SOLAR SYSTEM =================
     if system == "Solar System":
+          
+      import streamlit.components.v1 as components
+
+        st.markdown("""
+            <style>
+            iframe {
+                background-color: black !important;
+                border-radius: 15px;
+            }
+            </style>
+        """, unsafe_allow_html=True)
 
         st.subheader("🌌 Planetarium View")
 
@@ -492,14 +503,143 @@ with tab2:
         .uranus-orbit{width:760px;height:760px;animation:spin 82s linear infinite;}
         .neptune-orbit{width:900px;height:900px;animation:spin 100s linear infinite;}
 
-        .mercury{width:10px;height:10px;top:50%;left:-5px;background:gray;}
-        .venus{width:14px;height:14px;top:50%;left:-7px;background:orange;}
-        .earth{width:17px;height:17px;top:50%;left:-8px;background:blue;}
-        .mars{width:13px;height:13px;top:50%;left:-6px;background:red;}
-        .jupiter{width:30px;height:30px;top:50%;left:-15px;background:brown;}
-        .saturn{width:26px;height:26px;top:50%;left:-13px;background:gold;}
-        .uranus{width:21px;height:21px;top:50%;left:-10px;background:lightblue;}
-        .neptune{width:21px;height:21px;top:50%;left:-10px;background:darkblue;}
+        .mercury{width:10px;height:10px;top:50%;left:-5px;background:radial-gradient(circle,lightgray,gray);}
+        .venus{width:14px;height:14px;top:50%;left:-7px;background:radial-gradient(circle,#ffd27f,orange);}
+        .earth{width:17px;height:17px;top:50%;left:-8px;background:radial-gradient(circle,#66ccff,blue);}
+        .mars{width:13px;height:13px;top:50%;left:-6px;background:radial-gradient(circle,#ff9999,red);}
+        .jupiter{width:30px;height:30px;top:50%;left:-15px;background:radial-gradient(circle,#d2b48c,brown);}
+        .saturn{width:26px;height:26px;top:50%;left:-13px;background:radial-gradient(circle,#ffe680,gold);}
+        .uranus{width:21px;height:21px;top:50%;left:-10px;background:radial-gradient(circle,#ccffff,lightblue);}
+        .neptune{width:21px;height:21px;top:50%;left:-10px;background:radial-gradient(circle,#6699ff,darkblue);}
+
+        .ring{
+            position:absolute;
+            width:38px;
+            height:12px;
+            border:2px solid rgba(255,255,255,0.45);
+            border-radius:50%;
+            top:7px;
+            left:-6px;
+            transform:rotate(20deg);
+        }
+
+        .moon-orbit{
+            position:absolute;
+            width:34px;
+            height:34px;
+            border:1px dashed rgba(255,255,255,0.15);
+            border-radius:50%;
+            top:-8px;
+            left:-8px;
+            animation:spin 5s linear infinite;
+        }
+
+        .moon{
+            position:absolute;
+            width:5px;
+            height:5px;
+            background:white;
+            border-radius:50%;
+            top:50%;
+            left:-2px;
+        }
+
+        .iss-orbit{
+            position:absolute;
+            width:50px;
+            height:50px;
+            border:1px dotted rgba(255,255,255,0.10);
+            border-radius:50%;
+            top:-16px;
+            left:-16px;
+            animation:spin 4s linear infinite;
+        }
+
+        .iss{
+            position:absolute;
+            width:10px;
+            height:4px;
+            background:silver;
+            top:50%;
+            left:-5px;
+            box-shadow:0 0 8px white;
+        }
+
+        .iss::before{
+            content:'';
+            position:absolute;
+            width:18px;
+            height:2px;
+            background:royalblue;
+            left:-4px;
+            top:1px;
+        }
+
+        .iss::after{
+            content:'';
+            position:absolute;
+            width:2px;
+            height:8px;
+            background:white;
+            left:4px;
+            top:-2px;
+        }
+
+        .hubble-orbit{
+            position:absolute;
+            width:64px;
+            height:64px;
+            border:1px dotted rgba(255,255,255,0.08);
+            border-radius:50%;
+            top:-23px;
+            left:-23px;
+            animation:spin 6s linear infinite;
+        }
+
+        .hubble{
+            position:absolute;
+            width:5px;
+            height:10px;
+            background:silver;
+            top:50%;
+            left:-2px;
+            box-shadow:0 0 6px white;
+        }
+
+        .hubble::before{
+            content:'';
+            position:absolute;
+            width:14px;
+            height:2px;
+            background:royalblue;
+            left:-4px;
+            top:4px;
+        }
+
+        .comet{
+            position:absolute;
+            width:12px;
+            height:12px;
+            background:red;
+            border-radius:50%;
+            box-shadow:0 0 35px red;
+            animation:cometmove 9s linear infinite;
+        }
+
+        .comet-tail{
+            position:absolute;
+            width:90px;
+            height:3px;
+            background:linear-gradient(to left,red,transparent);
+            top:4px;
+            left:-85px;
+        }
+
+        @keyframes cometmove{
+            0%{left:-100px;top:120px;}
+            50%{left:600px;top:350px;}
+            100%{left:1300px;top:850px;}
+        }
 
         @keyframes spin{
             from{transform:translate(-50%,-50%) rotate(0deg);}
@@ -510,18 +650,63 @@ with tab2:
 
         <body>
         <div class="space">
+
+        <script>
+        for(let i=0;i<350;i++){
+            let s=document.createElement('div');
+            s.className='star';
+            s.style.width=(Math.random()*3)+'px';
+            s.style.height=(Math.random()*3)+'px';
+            s.style.top=(Math.random()*950)+'px';
+            s.style.left=(Math.random()*1250)+'px';
+            document.currentScript.parentElement.appendChild(s);
+        }
+
+        for(let i=0;i<120;i++){
+            let a=document.createElement('div');
+            a.style.position='absolute';
+            a.style.width='2px';
+            a.style.height='2px';
+            a.style.background='gray';
+            a.style.borderRadius='50%';
+            let angle=Math.random()*360;
+            let r=410+Math.random()*35;
+            let x=625+r*Math.cos(angle*Math.PI/180);
+            let y=475+r*Math.sin(angle*Math.PI/180);
+            a.style.left=x+'px';
+            a.style.top=y+'px';
+            document.currentScript.parentElement.appendChild(a);
+        }
+        </script>
+
         <div class="sun"></div>
 
         <div class="orbit mercury-orbit"><div class="planet mercury"><div class="label">Mercury</div></div></div>
         <div class="orbit venus-orbit"><div class="planet venus"><div class="label">Venus</div></div></div>
 
-        <div class="orbit earth-orbit"><div class="planet earth"><div class="label">Earth</div></div></div>
+        <div class="orbit earth-orbit">
+            <div class="planet earth">
+                <div class="label">Earth</div>
+                <div class="moon-orbit"><div class="moon"></div></div>
+                <div class="iss-orbit"><div class="iss"></div></div>
+                <div class="hubble-orbit"><div class="hubble"></div></div>
+            </div>
+        </div>
+
         <div class="orbit mars-orbit"><div class="planet mars"><div class="label">Mars</div></div></div>
         <div class="orbit jupiter-orbit"><div class="planet jupiter"><div class="label">Jupiter</div></div></div>
 
-        <div class="orbit saturn-orbit"><div class="planet saturn"><div class="label">Saturn</div></div></div>
+        <div class="orbit saturn-orbit">
+            <div class="planet saturn">
+                <div class="ring"></div>
+                <div class="label">Saturn</div>
+            </div>
+        </div>
+
         <div class="orbit uranus-orbit"><div class="planet uranus"><div class="label">Uranus</div></div></div>
         <div class="orbit neptune-orbit"><div class="planet neptune"><div class="label">Neptune</div></div></div>
+
+        <div class="comet"><div class="comet-tail"></div></div>
 
         </div>
         </body>
@@ -529,6 +714,10 @@ with tab2:
         """
 
         components.html(solar_html, height=980)
+  
+
+        st.subheader("🌌 Planetarium View")
+
 
     # ================= 🌌 EXOPLANET SYSTEMS =================
     else:
