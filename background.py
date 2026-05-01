@@ -270,22 +270,95 @@ if mode == "🌟 Basic":
 
 
     # ---------------- TAB 3 ----------------
-    with tab3:
-        st.header("🏆 Progress")
-        st.write("XP:", user_data["xp"])
-        st.write("Level:", user_data["xp"] // 100 + 1)
+    # ================= TAB 3: PROGRESS (CARDS UI) =================
+with tab3:
+    st.header("🏆 Progress Dashboard")
+
+    data = st.session_state.users[user]
+
+    xp = data.get("xp", 0)
+    completed = data.get("completed", 0)
+    streak = data.get("streak", 1)
+    level = xp // 100 + 1
+
+    st.markdown(f"""
+    <div style="
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        padding: 20px;
+        border-radius: 15px;
+        color: white;
+        text-align: center;
+        margin-bottom: 15px;
+    ">
+        <h2>👤 {user}</h2>
+        <h3>Level {level}</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.markdown(f"""
+    <div style="background:#2d3436;padding:15px;border-radius:12px;text-align:center;color:white;">
+        <h3>⭐ XP</h3>
+        <h2>{xp}</h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col2.markdown(f"""
+    <div style="background:#0984e3;padding:15px;border-radius:12px;text-align:center;color:white;">
+        <h3>🔥 Streak</h3>
+        <h2>{streak}</h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col3.markdown(f"""
+    <div style="background:#6c5ce7;padding:15px;border-radius:12px;text-align:center;color:white;">
+        <h3>🧠 Quizzes</h3>
+        <h2>{completed}</h2>
+    </div>
+    """, unsafe_allow_html=True)
 
 
-    # ---------------- TAB 4 ----------------
-    with tab4:
-        st.header("🥇 Leaderboard")
+# ================= TAB 4: LEADERBOARD (COLOR CARDS) =================
+with tab4:
+    st.header("🥇 Leaderboard")
 
-        users = st.session_state.users
-        sorted_users = sorted(users.items(), key=lambda x: x[1]["xp"], reverse=True)
+    users = st.session_state.users
+    sorted_users = sorted(users.items(), key=lambda x: x[1].get("xp", 0), reverse=True)
 
-        for i,(u,d) in enumerate(sorted_users):
-            st.write(f"{i+1}. {u} - {d['xp']} XP")
-    # =====================================================
+    colors = ["#FFD700", "#C0C0C0", "#CD7F32"]  # gold, silver, bronze
+
+    for i, (name, data) in enumerate(sorted_users):
+
+        xp = data.get("xp", 0)
+        level = xp // 100 + 1
+        avatar = data.get("avatar", "🚀")
+
+        if i < 3:
+            bg = colors[i]
+        else:
+            bg = "#2d3436"
+
+        st.markdown(f"""
+        <div style="
+            background:{bg};
+            padding:15px;
+            border-radius:12px;
+            margin:10px 0;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        ">
+            <div style="font-size:20px;">
+                {i+1}. {avatar} {name}
+            </div>
+
+            <div>
+                ⭐ XP: {xp} | 🎯 Lv: {level}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 # 🔬 ADVANCED MODE
 # =====================================================
 
