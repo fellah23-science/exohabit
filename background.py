@@ -276,33 +276,33 @@ if mode == "🌟 Basic":
             st.write("🛰️ Explorer")
         else:
             st.write("🌍 Beginner")
+            with tab4:
+    st.header("🥇 Leaderboard")
 
-    # -------- LEADERBOARD --------
-    with tab4:
-        st.header("🥇 Leaderboard")
+    leaderboard = st.session_state.users
 
-        leaderboard = st.session_state.get("leaderboard", {})
+    sorted_lb = sorted(
+        leaderboard.items(),
+        key=lambda x: x[1].get("xp", 0),
+        reverse=True
+    )
 
-        if len(leaderboard) == 0:
-            st.info("No players yet. Start playing quizzes to appear here!")
-        else:
-            sorted_lb = sorted(
-                leaderboard.items(),
-                key=lambda x: x[1],
-                reverse=True
-            )
+    if not sorted_lb:
+        st.info("No players yet")
+    else:
+        st.subheader("🌌 Top Explorers")
 
-            st.subheader("🌌 Top Explorers")
+        for i, (user, data) in enumerate(sorted_lb[:10]):
+            xp = data.get("xp", 0)
 
-            for i, (user, xp) in enumerate(sorted_lb[:10]):
-                if i == 0:
-                    st.success(f"🥇 {user} — {xp} XP")
-                elif i == 1:
-                    st.info(f"🥈 {user} — {xp} XP")
-                elif i == 2:
-                    st.warning(f"🥉 {user} — {xp} XP")
-                else:
-                    st.write(f"{i + 1}. {user} — {xp} XP")
+            if i == 0:
+                st.success(f"🥇 {user} — {xp} XP")
+            elif i == 1:
+                st.info(f"🥈 {user} — {xp} XP")
+            elif i == 2:
+                st.warning(f"🥉 {user} — {xp} XP")
+            else:
+                st.write(f"{i+1}. {user} — {xp} XP")
 
 # =====================================================
 # 🔬 ADVANCED MODE
