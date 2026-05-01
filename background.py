@@ -408,7 +408,7 @@ with tab2:
           
       import streamlit.components.v1 as components
 
-        st.markdown("""
+      st.markdown("""
             <style>
             iframe {
                 background-color: black !important;
@@ -417,7 +417,7 @@ with tab2:
             </style>
         """, unsafe_allow_html=True)
 
-        st.subheader("🌌 Planetarium View")
+      st.subheader("🌌 Planetarium View")
 
         solar_html = """
         <!DOCTYPE html>
