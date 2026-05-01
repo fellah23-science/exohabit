@@ -394,7 +394,7 @@ if mode == "🔬 Advanced":
 with tab2:
   st.header("🌌 Exoplanet System Simulator")
 
-      system = st.selectbox(
+        system = st.selectbox(
         "Choose System",
         ["TRAPPIST-1", "Kepler-90", "Proxima Centauri"]
     )
