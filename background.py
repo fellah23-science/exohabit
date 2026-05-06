@@ -203,7 +203,7 @@ if mode == "🌟 Basic":
     st.write(description)
 
     # ---------------- Visual Indicator ----------------
-    st.progress(min(100, int((temp / 350) * 100)))
+     st.progress(min(100, int((temp / 350) * 100)))
     # ---------------- TAB 2 ----------------
     with tab2:
         st.header("🧠 Quiz Zone")
