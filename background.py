@@ -146,64 +146,59 @@ if mode == "🌟 Basic":
     ])
 
     # ---------------- TAB 1 ----------------
-    with tab1:
-        st.header("🌍 Create Planet")
+    # ---------------- TAB 1 ----------------
+with tab1:
+    st.header("🌍 Create Planet")
+
     # ---------------- Inputs ----------------
-        star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
-        distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
-        albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
+    star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
+    distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
+    albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
 
     # ---------------- Stellar Luminosity ----------------
-    # Simplified but realistic scaling
     L = 1.0 if star_type == "G-Type" else 0.04
 
-    # ---------------- Stellar Flux (Inverse Square Law) ----------------
+    # ---------------- Stellar Flux ----------------
     flux = L / (distance ** 2)
 
-    # ---------------- Equilibrium Temperature Model ----------------
-    # Earth-normalized equilibrium scaling
+    # ---------------- Temperature ----------------
     temp = 278 * ((flux * (1 - albedo)) ** 0.25)
 
     # ---------------- Habitability Zones ----------------
     if temp < 230:
         zone = "❄️ Frozen Zone"
         color = "blue"
-        description = "Surface likely frozen. Liquid water is highly unlikely."
+        description = "Surface likely frozen."
 
     elif 230 <= temp < 260:
         zone = "🌍 Cold Habitable Zone"
         color = "cyan"
-        description = "Possible habitability if strong greenhouse warming exists."
+        description = "Needs strong greenhouse warming."
 
     elif 260 <= temp < 300:
         zone = "🌍 Temperate Habitable Zone"
         color = "green"
-        description = "Best range for Earth-like conditions (equilibrium model)."
+        description = "Best Earth-like equilibrium range."
 
     elif 300 <= temp < 340:
         zone = "🔥 Moist Greenhouse Risk Zone"
         color = "orange"
-        description = "Strong water vapor feedback may begin. Atmospheric instability possible."
+        description = "Water vapor feedback possible."
 
     else:
         zone = "☠️ Moist Greenhouse Zone"
         color = "red"
-        description = "High risk of long-term water loss due to atmospheric escape."
-
+        description = "High water loss risk."
 
     # ---------------- Output ----------------
     st.metric("Stellar Flux", round(flux, 3))
     st.metric("Equilibrium Temperature (K)", round(temp, 1))
 
-    st.markdown(
-        f"<h2 style='color:{color}'>{zone}</h2>",
-        unsafe_allow_html=True
-    )
+    st.markdown(f"<h2 style='color:{color}'>{zone}</h2>", unsafe_allow_html=True)
 
     st.write(description)
 
-    # ---------------- Visual Indicator ----------------
-     st.progress(min(100, int((temp / 350) * 100)))
+    st.progress(min(100, int((temp / 350) * 100)))
     # ---------------- TAB 2 ----------------
     with tab2:
         st.header("🧠 Quiz Zone")
