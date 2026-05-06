@@ -187,15 +187,15 @@ if mode == "🌟 Basic":
         color = "red"
         description = "High water loss risk."
 
-    # ---------------- Output ----------------
-    st.metric("Stellar Flux", round(flux, 3))
-    st.metric("Equilibrium Temperature (K)", round(temp, 1))
+        # ---------------- Output ----------------
+        st.metric("Stellar Flux", round(flux, 3))
+        st.metric("Equilibrium Temperature (K)", round(temp, 1))
 
-    st.markdown(f"<h2 style='color:{color}'>{zone}</h2>", unsafe_allow_html=True)
+        st.markdown(f"<h2 style='color:{color}'>{zone}</h2>", unsafe_allow_html=True)
 
-    st.write(description)
+        st.write(description)
 
-    st.progress(min(100, int((temp / 350) * 100)))
+        st.progress(min(100, int((temp / 350) * 100)))
     # ---------------- TAB 2 ----------------
     with tab2:
         st.header("🧠 Quiz Zone")
