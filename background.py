@@ -144,9 +144,7 @@ if mode == "🌟 Basic":
         "🏆 Progress",
         "🥇 Leaderboard"
     ])
-    # ================= TABS =================
-tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
-
+    
 
 # ================= TAB 1 =================
 with tab1:
