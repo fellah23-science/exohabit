@@ -144,58 +144,60 @@ if mode == "🌟 Basic":
         "🏆 Progress",
         "🥇 Leaderboard"
     ])
-    # ---------------- TAB 1 ----------------
-    with tab1:
-      st.header("🌍 Create Planet")
-    # ---------------- Inputs ----------------
-      star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
-      distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
-      albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
+   # ================= TAB 1 =================
+with tab1:
+    st.header("🌍 Create Planet")
 
-    # ---------------- Stellar Luminosity ----------------
+    # ---------------- Inputs ----------------
+    star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
+    distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
+    albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
+
+    # ---------------- Physics Model ----------------
     L = 1.0 if star_type == "G-Type" else 0.04
 
-    # ---------------- Stellar Flux ----------------
     flux = L / (distance ** 2)
 
-    # ---------------- Temperature ----------------
     temp = 278 * ((flux * (1 - albedo)) ** 0.25)
 
     # ---------------- Habitability Zones ----------------
     if temp < 230:
         zone = "❄️ Frozen Zone"
         color = "blue"
-        description = "Surface likely frozen."
+        description = "Surface likely frozen. Liquid water is unlikely."
 
     elif 230 <= temp < 260:
         zone = "🌍 Cold Habitable Zone"
         color = "cyan"
-        description = "Needs strong greenhouse warming."
+        description = "Possible habitability with strong greenhouse warming."
 
     elif 260 <= temp < 300:
         zone = "🌍 Temperate Habitable Zone"
         color = "green"
-        description = "Best Earth-like equilibrium range."
+        description = "Best range for Earth-like equilibrium conditions."
 
     elif 300 <= temp < 340:
         zone = "🔥 Moist Greenhouse Risk Zone"
         color = "orange"
-        description = "Water vapor feedback possible."
+        description = "Water vapor feedback may begin."
 
     else:
         zone = "☠️ Moist Greenhouse Zone"
         color = "red"
-        description = "High water loss risk."
+        description = "High risk of water loss."
 
-        # ---------------- Output ----------------
-       st.metric("Stellar Flux", round(flux, 3))
-       st.metric("Equilibrium Temperature (K)", round(temp, 1))
+    # ---------------- Output ONLY INSIDE TAB 1 ----------------
+    st.metric("Stellar Flux", round(flux, 3))
+    st.metric("Equilibrium Temperature (K)", round(temp, 1))
 
-       st.markdown(f"<h2 style='color:{color}'>{zone}</h2>", unsafe_allow_html=True)
+    st.markdown(
+        f"<h2 style='color:{color}'>{zone}</h2>",
+        unsafe_allow_html=True
+    )
 
-       st.write(description)
- 
-       st.progress(min(100, int((temp / 350) * 100)))
+    st.write(description)
+
+    st.progress(min(100, int((temp / 350) * 100)))
     # ---------------- TAB 2 ----------------
     with tab2:
         st.header("🧠 Quiz Zone")
