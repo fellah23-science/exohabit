@@ -144,27 +144,29 @@ if mode == "🌟 Basic":
         "🏆 Progress",
         "🥇 Leaderboard"
     ])
-   # ================= TAB 1 =================
- with tab1:
-       st.header("🌍 Create Planet")
-      
-    # ---------------- Inputs (ONLY HERE) ----------------
-       star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
-       distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
-       albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
+    # ================= TABS =================
+tab1, tab2, tab3, tab4 = st.tabs(["🌍 Create Planet", "🧠 Quiz", "🏆 Progress", "🥇 Leaderboard"])
+
+
+# ================= TAB 1 =================
+with tab1:
+    st.header("🌍 Create Planet")
+
+    # ---------------- Inputs ----------------
+    star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
+    distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
+    albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
 
     # ---------------- Stellar Model ----------------
-      # G-type ~ Sun, M-type ~ red dwarf (simplified)
-       luminosity = 1.0 if star_type == "G-Type" else 0.04
+    luminosity = 1.0 if star_type == "G-Type" else 0.04
 
-    # ---------------- Stellar Flux (Inverse Square Law) ----------------
-       flux = luminosity / (distance ** 2)
+    # ---------------- Flux ----------------
+    flux = luminosity / (distance ** 2)
 
-    # ---------------- Equilibrium Temperature ----------------
-     # Earth-calibrated radiative equilibrium model
-       temp = 278 * ((flux * (1 - albedo)) ** 0.25)
+    # ---------------- Temperature ----------------
+    temp = 278 * ((flux * (1 - albedo)) ** 0.25)
 
-    # ---------------- Habitability Classification ----------------
+    # ---------------- Habitability ----------------
     if temp < 230:
         zone = "❄️ Frozen Zone"
         color = "blue"
@@ -190,25 +192,21 @@ if mode == "🌟 Basic":
         color = "red"
         description = "High risk of water loss and runaway heating."
 
-    # ---------------- OUTPUT (ONLY TAB 1) ----------------
+    # ---------------- Output ----------------
     st.metric("Stellar Flux", round(flux, 3))
     st.metric("Equilibrium Temperature (K)", round(temp, 1))
 
-    st.markdown(
-        f"<h2 style='color:{color}'>{zone}</h2>",
-        unsafe_allow_html=True
-    )
-
+    st.markdown(f"<h2 style='color:{color}'>{zone}</h2>", unsafe_allow_html=True)
     st.write(description)
 
-    st.progress(min(100, int((temp / 350) * 100))) 
-    
-    # ---------------- TAB 2 ----------------
-    with tab2:
-        st.header("🧠 Quiz Zone")
+    st.progress(min(100, int((temp / 350) * 100)))
 
-        quiz_data = {
 
+# ================= TAB 2 =================
+with tab2:
+    st.header("🧠 Quiz Zone")
+
+    quiz_data = {
         "Quiz 1": [
             ("Closest planet to Sun?", ["Mercury","Venus","Earth","Mars"], "Mercury"),
             ("Hottest planet?", ["Earth","Venus","Mercury","Mars"], "Venus"),
@@ -216,7 +214,6 @@ if mode == "🌟 Basic":
             ("Largest planet?", ["Earth","Saturn","Jupiter","Mars"], "Jupiter"),
             ("Planet with rings?", ["Mars","Earth","Saturn","Venus"], "Saturn")
         ],
-
         "Quiz 2": [
             ("What powers stars?", ["Fusion","Fission","Electricity","Gravity"], "Fusion"),
             ("Our galaxy?", ["Milky Way","Andromeda","Orion","Pegasus"], "Milky Way"),
@@ -224,7 +221,6 @@ if mode == "🌟 Basic":
             ("Orbit means?", ["Path","Speed","Mass","Energy"], "Path"),
             ("Comets mostly?", ["Ice","Rock","Metal","Gas"], "Ice")
         ],
-
         "Quiz 3": [
             ("Exoplanet?", ["Outside system","Inside system","Moon","Star"], "Outside system"),
             ("Albedo?", ["Reflectivity","Heat","Mass","Speed"], "Reflectivity"),
@@ -232,7 +228,6 @@ if mode == "🌟 Basic":
             ("Temp unit?", ["Kelvin","Meter","Second","Joule"], "Kelvin"),
             ("Flux?", ["Energy received","Mass","Speed","Distance"], "Energy received")
         ],
-
         "Quiz 4": [
             ("Sun type?", ["G-type","M-type","K-type","O-type"], "G-type"),
             ("Closest star?", ["Proxima Centauri","Sirius","Vega","Betelgeuse"], "Proxima Centauri"),
@@ -240,7 +235,6 @@ if mode == "🌟 Basic":
             ("Orbit shape?", ["Ellipse","Square","Triangle","Line"], "Ellipse"),
             ("Mars color?", ["Red","Blue","Green","White"], "Red")
         ],
-
         "Quiz 5": [
             ("TRAPPIST-1 planets?", ["7","5","9","3"], "7"),
             ("Red dwarfs?", ["Small stars","Planets","Gas","Moons"], "Small stars"),
@@ -248,7 +242,6 @@ if mode == "🌟 Basic":
             ("Earth temp?", ["288K","100K","500K","50K"], "288K"),
             ("Sun age?", ["4.6B","1B","10B","100M"], "4.6B")
         ],
-
         "Quiz 6": [
             ("Jupiter type?", ["Gas giant","Rocky","Ice","Metal"], "Gas giant"),
             ("Saturn has?", ["Rings","Moons only","None","No gravity"], "Rings"),
@@ -256,7 +249,6 @@ if mode == "🌟 Basic":
             ("Mercury moons?", ["0","1","2","3"], "0"),
             ("Venus rotation?", ["Slow","Fast","Normal","None"], "Slow")
         ],
-
         "Quiz 7": [
             ("Black hole?", ["Gravity trap","Light","Energy","Gas"], "Gravity trap"),
             ("Supernova?", ["Explosion","Cooling","Orbit","Fusion"], "Explosion"),
@@ -264,7 +256,6 @@ if mode == "🌟 Basic":
             ("Galaxy shape?", ["Spiral","Square","Flat","Triangle"], "Spiral"),
             ("Dark matter?", ["Invisible","Visible","Solid","Liquid"], "Invisible")
         ],
-
         "Quiz 8": [
             ("ISS?", ["Space station","Planet","Star","Rocket"], "Space station"),
             ("Hubble?", ["Telescope","Planet","Rocket","Satellite"], "Telescope"),
@@ -272,7 +263,6 @@ if mode == "🌟 Basic":
             ("Rocket fuel?", ["Chemical","Water","Air","Electric"], "Chemical"),
             ("Escape velocity?", ["Min speed","Mass","Force","Energy"], "Min speed")
         ],
-
         "Quiz 9": [
             ("Orbit shape?", ["Ellipse","Circle","Square","Line"], "Ellipse"),
             ("Gravity?", ["Force","Light","Energy","Wave"], "Force"),
@@ -280,7 +270,6 @@ if mode == "🌟 Basic":
             ("Distance unit?", ["AU","kg","s","W"], "AU"),
             ("Time unit?", ["Second","Meter","AU","kg"], "Second")
         ],
-
         "Quiz 10": [
             ("Life needs?", ["Water","Iron","Dust","Gas"], "Water"),
             ("Gold formed?", ["Supernova","Earth","Moon","Sun"], "Supernova"),
@@ -288,105 +277,82 @@ if mode == "🌟 Basic":
             ("Cool stars?", ["Red","Blue","White","Yellow"], "Red"),
             ("Universe expanding?", ["Yes","No","Maybe","Unknown"], "Yes")
         ]
+    }
 
-        }
+    choice = st.selectbox("Choose Quiz", list(quiz_data.keys()))
+    qset = quiz_data[choice]
 
-        choice = st.selectbox("Choose Quiz", list(quiz_data.keys()))
-        qset = quiz_data[choice]
+    answers = []
+    for i, (q, opt, ans) in enumerate(qset):
+        answers.append(st.radio(q, opt, key=f"{choice}_{i}"))
 
-        answers = []
-        for i, (q, opt, ans) in enumerate(qset):
-            answers.append(st.radio(q, opt, key=f"{choice}_{i}"))
+    if st.button("Submit Quiz"):
+        score = sum([1 for i, (_, _, ans) in enumerate(qset) if answers[i] == ans])
+        st.success(f"Score {score}/5")
 
-        if st.button("Submit Quiz"):
-            score = sum([1 for i,(_,_,ans) in enumerate(qset) if answers[i] == ans])
-            st.success(f"Score {score}/5")
-
-            user_data["xp"] += score * 10
-            user_data["completed"] += 1
-            save_data()
+        user_data["xp"] += score * 10
+        user_data["completed"] += 1
+        save_data()
 
 
-      # ---------------- TAB 3 ----------------
-    with tab3:
-        st.header("🏆 Progress Dashboard")
+# ================= TAB 3 =================
+with tab3:
+    st.header("🏆 Progress Dashboard")
 
-        data = st.session_state.users[user]
+    data = st.session_state.users[user]
 
+    xp = data.get("xp", 0)
+    completed = data.get("completed", 0)
+    streak = data.get("streak", 1)
+    level = xp // 100 + 1
+
+    st.markdown(f"""
+    <div style="
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        padding: 20px;
+        border-radius: 15px;
+        color: white;
+        text-align: center;
+        margin-bottom: 15px;
+    ">
+        <h2>👤 {user}</h2>
+        <h3>Level {level}</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.write(f"⭐ XP: {xp}")
+    col2.write(f"🔥 Streak: {streak}")
+    col3.write(f"🧠 Quizzes: {completed}")
+
+
+# ================= TAB 4 =================
+with tab4:
+    st.header("🥇 Leaderboard")
+
+    users = st.session_state.users
+
+    sorted_users = sorted(users.items(), key=lambda x: x[1].get("xp", 0), reverse=True)
+
+    for i, (name, data) in enumerate(sorted_users):
         xp = data.get("xp", 0)
-        completed = data.get("completed", 0)
-        streak = data.get("streak", 1)
         level = xp // 100 + 1
+        avatar = data.get("avatar", "🚀")
 
-        st.markdown(f"""
-        <div style="
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            padding: 20px;
-            border-radius: 15px;
-            color: white;
-            text-align: center;
-            margin-bottom: 15px;
-        ">
-            <h2>👤 {user}</h2>
-            <h3>Level {level}</h3>
-        </div>
-        """, unsafe_allow_html=True)
+        if i == 0:
+            rank = "🥇"
+        elif i == 1:
+            rank = "🥈"
+        elif i == 2:
+            rank = "🥉"
+        else:
+            rank = f"{i+1}."
 
-        col1, col2, col3 = st.columns(3)
-
-        col1.markdown(f"""
-        <div style="background:#2d3436;padding:15px;border-radius:12px;text-align:center;color:white;">
-            <h3>⭐ XP</h3>
-            <h2>{xp}</h2>
-        </div>
-        """, unsafe_allow_html=True)
-
-        col2.markdown(f"""
-        <div style="background:#0984e3;padding:15px;border-radius:12px;text-align:center;color:white;">
-            <h3>🔥 Streak</h3>
-            <h2>{streak}</h2>
-        </div>
-        """, unsafe_allow_html=True)
-
-        col3.markdown(f"""
-        <div style="background:#6c5ce7;padding:15px;border-radius:12px;text-align:center;color:white;">
-            <h3>🧠 Quizzes</h3>
-            <h2>{completed}</h2>
-        </div>
-        """, unsafe_allow_html=True)
-
-
-    # ================= TAB 4 =================
-    with tab4:
-        st.header("🥇 Leaderboard")
-
-        users = st.session_state.users
-
-        sorted_users = sorted(
-            users.items(),
-            key=lambda x: x[1].get("xp", 0),
-            reverse=True
-        )
-
-        for i, (name, data) in enumerate(sorted_users):
-            xp = data.get("xp", 0)
-            level = xp // 100 + 1
-            avatar = data.get("avatar", "🚀")
-
-            if i == 0:
-                rank = "🥇"
-            elif i == 1:
-                rank = "🥈"
-            elif i == 2:
-                rank = "🥉"
-            else:
-                rank = f"{i+1}."
-
-            col1, col2, col3 = st.columns([2, 1, 1])
-
-            col1.write(f"{rank} {avatar} {name}")
-            col2.write(f"⭐ XP: {xp}")
-            col3.write(f"🎯 Lv: {level}")
+        col1, col2, col3 = st.columns([2, 1, 1])
+        col1.write(f"{rank} {avatar} {name}")
+        col2.write(f"⭐ XP: {xp}")
+        col3.write(f"🎯 Lv: {level}")
        
 # 🔬 ADVANCED MODE
 # =====================================================
