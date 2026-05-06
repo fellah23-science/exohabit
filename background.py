@@ -135,221 +135,195 @@ mode = st.sidebar.radio("Mode", ["🌟 Basic", "🔬 Advanced"])
 # =====================================================
 # 🌟 BASIC MODE (FULL)
 # =====================================================
+# 🌟 BASIC MODE
+# =====================================================
+
 if mode == "🌟 Basic":
 
-   tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3, tab4 = st.tabs([
         "🌍 Create Planet",
         "🧠 Quiz",
         "🏆 Progress",
         "🥇 Leaderboard"
     ])
-    
 
-# ================= TAB 1 =================
-with tab1:
-    st.header("🌍 Create Planet")
+    # ================= TAB 1 =================
+    with tab1:
+        st.header("🌍 Create Planet")
 
-    # ---------------- Inputs ----------------
-    star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
-    distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
-    albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
+        star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
+        distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
+        albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
 
-    # ---------------- Stellar Model ----------------
-    luminosity = 1.0 if star_type == "G-Type" else 0.04
+        luminosity = 1.0 if star_type == "G-Type" else 0.04
+        flux = luminosity / (distance ** 2)
 
-    # ---------------- Flux ----------------
-    flux = luminosity / (distance ** 2)
+        temp = 278 * ((flux * (1 - albedo)) ** 0.25)
 
-    # ---------------- Temperature ----------------
-    temp = 278 * ((flux * (1 - albedo)) ** 0.25)
+        if temp < 230:
+            zone = "❄️ Frozen Zone"
+            color = "blue"
+            description = "Planet is likely fully frozen. No liquid water."
 
-    # ---------------- Habitability ----------------
-    if temp < 230:
-        zone = "❄️ Frozen Zone"
-        color = "blue"
-        description = "Planet is likely fully frozen. No liquid water."
+        elif 230 <= temp < 260:
+            zone = "🌍 Cold Habitable Zone"
+            color = "cyan"
+            description = "Possible habitability if greenhouse warming exists."
 
-    elif 230 <= temp < 260:
-        zone = "🌍 Cold Habitable Zone"
-        color = "cyan"
-        description = "Possible habitability if greenhouse warming exists."
+        elif 260 <= temp < 300:
+            zone = "🌍 Temperate Habitable Zone"
+            color = "green"
+            description = "Best range for Earth-like conditions."
 
-    elif 260 <= temp < 300:
-        zone = "🌍 Temperate Habitable Zone"
-        color = "green"
-        description = "Best range for Earth-like equilibrium conditions."
+        elif 300 <= temp < 340:
+            zone = "🔥 Moist Greenhouse Risk Zone"
+            color = "orange"
+            description = "Water vapor feedback may begin."
 
-    elif 300 <= temp < 340:
-        zone = "🔥 Moist Greenhouse Risk Zone"
-        color = "orange"
-        description = "Water vapor feedback may begin."
-
-    else:
-        zone = "☠️ Moist Greenhouse Zone"
-        color = "red"
-        description = "High risk of water loss and runaway heating."
-
-    # ---------------- Output ----------------
-    st.metric("Stellar Flux", round(flux, 3))
-    st.metric("Equilibrium Temperature (K)", round(temp, 1))
-
-    st.markdown(f"<h2 style='color:{color}'>{zone}</h2>", unsafe_allow_html=True)
-    st.write(description)
-
-    st.progress(min(100, int((temp / 350) * 100)))
-
-
-# ================= TAB 2 =================
-with tab2:
-    st.header("🧠 Quiz Zone")
-
-    quiz_data = {
-        "Quiz 1": [
-            ("Closest planet to Sun?", ["Mercury","Venus","Earth","Mars"], "Mercury"),
-            ("Hottest planet?", ["Earth","Venus","Mercury","Mars"], "Venus"),
-            ("Red planet?", ["Mars","Jupiter","Earth","Venus"], "Mars"),
-            ("Largest planet?", ["Earth","Saturn","Jupiter","Mars"], "Jupiter"),
-            ("Planet with rings?", ["Mars","Earth","Saturn","Venus"], "Saturn")
-        ],
-        "Quiz 2": [
-            ("What powers stars?", ["Fusion","Fission","Electricity","Gravity"], "Fusion"),
-            ("Our galaxy?", ["Milky Way","Andromeda","Orion","Pegasus"], "Milky Way"),
-            ("Moon is?", ["Planet","Star","Satellite","Comet"], "Satellite"),
-            ("Orbit means?", ["Path","Speed","Mass","Energy"], "Path"),
-            ("Comets mostly?", ["Ice","Rock","Metal","Gas"], "Ice")
-        ],
-        "Quiz 3": [
-            ("Exoplanet?", ["Outside system","Inside system","Moon","Star"], "Outside system"),
-            ("Albedo?", ["Reflectivity","Heat","Mass","Speed"], "Reflectivity"),
-            ("Habitable zone?", ["Liquid water","Gas","Ice","Metal"], "Liquid water"),
-            ("Temp unit?", ["Kelvin","Meter","Second","Joule"], "Kelvin"),
-            ("Flux?", ["Energy received","Mass","Speed","Distance"], "Energy received")
-        ],
-        "Quiz 4": [
-            ("Sun type?", ["G-type","M-type","K-type","O-type"], "G-type"),
-            ("Closest star?", ["Proxima Centauri","Sirius","Vega","Betelgeuse"], "Proxima Centauri"),
-            ("Speed of light?", ["3e8 m/s","1e6","1e3","1e2"], "3e8 m/s"),
-            ("Orbit shape?", ["Ellipse","Square","Triangle","Line"], "Ellipse"),
-            ("Mars color?", ["Red","Blue","Green","White"], "Red")
-        ],
-        "Quiz 5": [
-            ("TRAPPIST-1 planets?", ["7","5","9","3"], "7"),
-            ("Red dwarfs?", ["Small stars","Planets","Gas","Moons"], "Small stars"),
-            ("Life needs?", ["Water","Metal","Dust","Gas"], "Water"),
-            ("Earth temp?", ["288K","100K","500K","50K"], "288K"),
-            ("Sun age?", ["4.6B","1B","10B","100M"], "4.6B")
-        ],
-        "Quiz 6": [
-            ("Jupiter type?", ["Gas giant","Rocky","Ice","Metal"], "Gas giant"),
-            ("Saturn has?", ["Rings","Moons only","None","No gravity"], "Rings"),
-            ("Neptune winds?", ["Fast","Slow","None","Calm"], "Fast"),
-            ("Mercury moons?", ["0","1","2","3"], "0"),
-            ("Venus rotation?", ["Slow","Fast","Normal","None"], "Slow")
-        ],
-        "Quiz 7": [
-            ("Black hole?", ["Gravity trap","Light","Energy","Gas"], "Gravity trap"),
-            ("Supernova?", ["Explosion","Cooling","Orbit","Fusion"], "Explosion"),
-            ("Nebula?", ["Gas cloud","Planet","Star","Rock"], "Gas cloud"),
-            ("Galaxy shape?", ["Spiral","Square","Flat","Triangle"], "Spiral"),
-            ("Dark matter?", ["Invisible","Visible","Solid","Liquid"], "Invisible")
-        ],
-        "Quiz 8": [
-            ("ISS?", ["Space station","Planet","Star","Rocket"], "Space station"),
-            ("Hubble?", ["Telescope","Planet","Rocket","Satellite"], "Telescope"),
-            ("JWST sees?", ["Infrared","Radio","X-ray","UV"], "Infrared"),
-            ("Rocket fuel?", ["Chemical","Water","Air","Electric"], "Chemical"),
-            ("Escape velocity?", ["Min speed","Mass","Force","Energy"], "Min speed")
-        ],
-        "Quiz 9": [
-            ("Orbit shape?", ["Ellipse","Circle","Square","Line"], "Ellipse"),
-            ("Gravity?", ["Force","Light","Energy","Wave"], "Force"),
-            ("Mass unit?", ["kg","m","s","J"], "kg"),
-            ("Distance unit?", ["AU","kg","s","W"], "AU"),
-            ("Time unit?", ["Second","Meter","AU","kg"], "Second")
-        ],
-        "Quiz 10": [
-            ("Life needs?", ["Water","Iron","Dust","Gas"], "Water"),
-            ("Gold formed?", ["Supernova","Earth","Moon","Sun"], "Supernova"),
-            ("Hot stars?", ["Blue","Red","Yellow","White"], "Blue"),
-            ("Cool stars?", ["Red","Blue","White","Yellow"], "Red"),
-            ("Universe expanding?", ["Yes","No","Maybe","Unknown"], "Yes")
-        ]
-    }
-
-    choice = st.selectbox("Choose Quiz", list(quiz_data.keys()))
-    qset = quiz_data[choice]
-
-    answers = []
-    for i, (q, opt, ans) in enumerate(qset):
-        answers.append(st.radio(q, opt, key=f"{choice}_{i}"))
-
-    if st.button("Submit Quiz"):
-        score = sum([1 for i, (_, _, ans) in enumerate(qset) if answers[i] == ans])
-        st.success(f"Score {score}/5")
-
-        user_data["xp"] += score * 10
-        user_data["completed"] += 1
-        save_data()
-
-
-# ================= TAB 3 =================
-with tab3:
-    st.header("🏆 Progress Dashboard")
-
-    data = st.session_state.users[user]
-
-    xp = data.get("xp", 0)
-    completed = data.get("completed", 0)
-    streak = data.get("streak", 1)
-    level = xp // 100 + 1
-
-    st.markdown(f"""
-    <div style="
-        background: linear-gradient(135deg, #1e3c72, #2a5298);
-        padding: 20px;
-        border-radius: 15px;
-        color: white;
-        text-align: center;
-        margin-bottom: 15px;
-    ">
-        <h2>👤 {user}</h2>
-        <h3>Level {level}</h3>
-    </div>
-    """, unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns(3)
-
-    col1.write(f"⭐ XP: {xp}")
-    col2.write(f"🔥 Streak: {streak}")
-    col3.write(f"🧠 Quizzes: {completed}")
-
-
-# ================= TAB 4 =================
-with tab4:
-    st.header("🥇 Leaderboard")
-
-    users = st.session_state.users
-
-    sorted_users = sorted(users.items(), key=lambda x: x[1].get("xp", 0), reverse=True)
-
-    for i, (name, data) in enumerate(sorted_users):
-        xp = data.get("xp", 0)
-        level = xp // 100 + 1
-        avatar = data.get("avatar", "🚀")
-
-        if i == 0:
-            rank = "🥇"
-        elif i == 1:
-            rank = "🥈"
-        elif i == 2:
-            rank = "🥉"
         else:
-            rank = f"{i+1}."
+            zone = "☠️ Moist Greenhouse Zone"
+            color = "red"
+            description = "High risk of water loss and runaway heating."
 
-        col1, col2, col3 = st.columns([2, 1, 1])
-        col1.write(f"{rank} {avatar} {name}")
-        col2.write(f"⭐ XP: {xp}")
-        col3.write(f"🎯 Lv: {level}")
+        st.metric("Stellar Flux", round(flux, 3))
+        st.metric("Equilibrium Temperature (K)", round(temp, 1))
+
+        st.markdown(f"<h2 style='color:{color}'>{zone}</h2>", unsafe_allow_html=True)
+        st.write(description)
+
+        st.progress(min(100, int((temp / 350) * 100)))
+
+
+    # ================= TAB 2 =================
+    with tab2:
+        st.header("🧠 Quiz Zone")
+
+        quiz_data = {
+            "Quiz 1": [
+                ("Closest planet to Sun?", ["Mercury","Venus","Earth","Mars"], "Mercury"),
+                ("Hottest planet?", ["Earth","Venus","Mercury","Mars"], "Venus"),
+                ("Red planet?", ["Mars","Jupiter","Earth","Venus"], "Mars"),
+                ("Largest planet?", ["Earth","Saturn","Jupiter","Mars"], "Jupiter"),
+                ("Planet with rings?", ["Mars","Earth","Saturn","Venus"], "Saturn")
+            ],
+            "Quiz 2": [
+                ("What powers stars?", ["Fusion","Fission","Electricity","Gravity"], "Fusion"),
+                ("Our galaxy?", ["Milky Way","Andromeda","Orion","Pegasus"], "Milky Way"),
+                ("Moon is?", ["Planet","Star","Satellite","Comet"], "Satellite"),
+                ("Orbit means?", ["Path","Speed","Mass","Energy"], "Path"),
+                ("Comets mostly?", ["Ice","Rock","Metal","Gas"], "Ice")
+            ],
+            "Quiz 3": [
+                ("Exoplanet?", ["Outside system","Inside system","Moon","Star"], "Outside system"),
+                ("Albedo?", ["Reflectivity","Heat","Mass","Speed"], "Reflectivity"),
+                ("Habitable zone?", ["Liquid water","Gas","Ice","Metal"], "Liquid water"),
+                ("Temp unit?", ["Kelvin","Meter","Second","Joule"], "Kelvin"),
+                ("Flux?", ["Energy received","Mass","Speed","Distance"], "Energy received")
+            ],
+            "Quiz 4": [
+                ("Sun type?", ["G-type","M-type","K-type","O-type"], "G-type"),
+                ("Closest star?", ["Proxima Centauri","Sirius","Vega","Betelgeuse"], "Proxima Centauri"),
+                ("Speed of light?", ["3e8 m/s","1e6","1e3","1e2"], "3e8 m/s"),
+                ("Orbit shape?", ["Ellipse","Square","Triangle","Line"], "Ellipse"),
+                ("Mars color?", ["Red","Blue","Green","White"], "Red")
+            ],
+            "Quiz 5": [
+                ("TRAPPIST-1 planets?", ["7","5","9","3"], "7"),
+                ("Red dwarfs?", ["Small stars","Planets","Gas","Moons"], "Small stars"),
+                ("Life needs?", ["Water","Metal","Dust","Gas"], "Water"),
+                ("Earth temp?", ["288K","100K","500K","50K"], "288K"),
+                ("Sun age?", ["4.6B","1B","10B","100M"], "4.6B")
+            ],
+            "Quiz 6": [
+                ("Jupiter type?", ["Gas giant","Rocky","Ice","Metal"], "Gas giant"),
+                ("Saturn has?", ["Rings","Moons only","None","No gravity"], "Rings"),
+                ("Neptune winds?", ["Fast","Slow","None","Calm"], "Fast"),
+                ("Mercury moons?", ["0","1","2","3"], "0"),
+                ("Venus rotation?", ["Slow","Fast","Normal","None"], "Slow")
+            ],
+            "Quiz 7": [
+                ("Black hole?", ["Gravity trap","Light","Energy","Gas"], "Gravity trap"),
+                ("Supernova?", ["Explosion","Cooling","Orbit","Fusion"], "Explosion"),
+                ("Nebula?", ["Gas cloud","Planet","Star","Rock"], "Gas cloud"),
+                ("Galaxy shape?", ["Spiral","Square","Flat","Triangle"], "Spiral"),
+                ("Dark matter?", ["Invisible","Visible","Solid","Liquid"], "Invisible")
+            ],
+            "Quiz 8": [
+                ("ISS?", ["Space station","Planet","Star","Rocket"], "Space station"),
+                ("Hubble?", ["Telescope","Planet","Rocket","Satellite"], "Telescope"),
+                ("JWST sees?", ["Infrared","Radio","X-ray","UV"], "Infrared"),
+                ("Rocket fuel?", ["Chemical","Water","Air","Electric"], "Chemical"),
+                ("Escape velocity?", ["Min speed","Mass","Force","Energy"], "Min speed")
+            ],
+            "Quiz 9": [
+                ("Orbit shape?", ["Ellipse","Circle","Square","Line"], "Ellipse"),
+                ("Gravity?", ["Force","Light","Energy","Wave"], "Force"),
+                ("Mass unit?", ["kg","m","s","J"], "kg"),
+                ("Distance unit?", ["AU","kg","s","W"], "AU"),
+                ("Time unit?", ["Second","Meter","AU","kg"], "Second")
+            ],
+            "Quiz 10": [
+                ("Life needs?", ["Water","Iron","Dust","Gas"], "Water"),
+                ("Gold formed?", ["Supernova","Earth","Moon","Sun"], "Supernova"),
+                ("Hot stars?", ["Blue","Red","Yellow","White"], "Blue"),
+                ("Cool stars?", ["Red","Blue","White","Yellow"], "Red"),
+                ("Universe expanding?", ["Yes","No","Maybe","Unknown"], "Yes")
+            ]
+        }
+
+        choice = st.selectbox("Choose Quiz", list(quiz_data.keys()))
+        qset = quiz_data[choice]
+
+        answers = []
+        for i, (q, opt, ans) in enumerate(qset):
+            answers.append(st.radio(q, opt, key=f"{choice}_{i}"))
+
+        if st.button("Submit Quiz"):
+            score = sum([1 for i, (_, _, ans) in enumerate(qset) if answers[i] == ans])
+            st.success(f"Score {score}/5")
+
+            user_data["xp"] += score * 10
+            user_data["completed"] += 1
+            save_data()
+
+
+    # ================= TAB 3 =================
+    with tab3:
+        st.header("🏆 Progress Dashboard")
+
+        data = st.session_state.users[user]
+
+        xp = data.get("xp", 0)
+        completed = data.get("completed", 0)
+        streak = data.get("streak", 1)
+        level = xp // 100 + 1
+
+        st.metric("XP", xp)
+        st.metric("Level", level)
+        st.metric("Streak", streak)
+        st.metric("Quizzes", completed)
+
+
+    # ================= TAB 4 =================
+    with tab4:
+        st.header("🥇 Leaderboard")
+
+        users = st.session_state.users
+
+        sorted_users = sorted(users.items(), key=lambda x: x[1].get("xp", 0), reverse=True)
+
+        for i, (name, data) in enumerate(sorted_users):
+            xp = data.get("xp", 0)
+            level = xp // 100 + 1
+            avatar = data.get("avatar", "🚀")
+
+            rank = "🥇" if i == 0 else "🥈" if i == 1 else "🥉" if i == 2 else f"{i+1}."
+
+            col1, col2, col3 = st.columns([2, 1, 1])
+            col1.write(f"{rank} {avatar} {name}")
+            col2.write(f"⭐ XP: {xp}")
+            col3.write(f"🎯 Lv: {level}")
+
        
 # 🔬 ADVANCED MODE
 # =====================================================
@@ -363,7 +337,7 @@ if mode == "🔬 Advanced":
     ])
 
     # ================= TAB 1: PLANET CARDS =================
-with tab1:
+    with tab1:
         st.header("🪐 Exoplanet Cards")
 
         planets = [
@@ -409,7 +383,7 @@ with tab1:
 
 
     # ================= TAB 2: SIMULATOR =================
-with tab2:
+    with tab2:
         st.header("🌌 planetarium Simulator")
         import streamlit.components.v1 as components
         st.markdown("""
@@ -722,7 +696,7 @@ with tab2:
        
 
     # ================= TAB 3: CALCULATOR ================
-with tab3:
+    with tab3:
         st.header("🔥 Habitability Calculator")
 
         star = st.selectbox("Star Type", ["G-Type", "M-Type"])
