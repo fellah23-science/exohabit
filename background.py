@@ -357,7 +357,7 @@ if mode == "🔬 Advanced":
 
     tab1, tab2, tab3 = st.tabs([
         "🪐 Planet Cards",
-        "🌌 Exoplanet Simulator",
+        "🌌 planetarium simulator",
         "🔥 Habitability Calculator"
     ])
 
@@ -409,7 +409,7 @@ if mode == "🔬 Advanced":
 
     # ================= TAB 2: SIMULATOR =================
     with tab2:
-        st.header("🌌 Exoplanet System Simulator")
+        st.header("🌌 planetarium Simulator")
         import streamlit.components.v1 as components
         st.markdown("""
             <style>
@@ -420,7 +420,7 @@ if mode == "🔬 Advanced":
             </style>
         """, unsafe_allow_html=True)
 
-        st.subheader("🌌 Planetarium View")
+        st.subheader("🌌 solar system ")
 
         solar_html = """
         <!DOCTYPE html>
