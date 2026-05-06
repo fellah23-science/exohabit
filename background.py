@@ -147,57 +147,62 @@ if mode == "🌟 Basic":
    # ================= TAB 1 =================
     with tab1:
        st.header("🌍 Create Planet")
-
-    # ---------------- Inputs ----------------
+      
+    # ---------------- Inputs (ONLY HERE) ----------------
        star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
        distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
        albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
 
-    # ---------------- Physics Model ----------------
-       L = 1.0 if star_type == "G-Type" else 0.04
+    # ---------------- Stellar Model ----------------
+    # G-type ~ Sun, M-type ~ red dwarf (simplified)
+    luminosity = 1.0 if star_type == "G-Type" else 0.04
 
-       flux = L / (distance ** 2)
+    # ---------------- Stellar Flux (Inverse Square Law) ----------------
+    flux = luminosity / (distance ** 2)
 
-       temp = 278 * ((flux * (1 - albedo)) ** 0.25)
+    # ---------------- Equilibrium Temperature ----------------
+    # Earth-calibrated radiative equilibrium model
+    temp = 278 * ((flux * (1 - albedo)) ** 0.25)
 
-    # ---------------- Habitability Zones ----------------
-       if temp < 230:
-           zone = "❄️ Frozen Zone"
-           color = "blue"
-           description = "Surface likely frozen. Liquid water is unlikely."
+    # ---------------- Habitability Classification ----------------
+    if temp < 230:
+        zone = "❄️ Frozen Zone"
+        color = "blue"
+        description = "Planet is likely fully frozen. No liquid water."
 
-         elif 230 <= temp < 260:
-            zone = "🌍 Cold Habitable Zone"
-            color = "cyan"
-            description = "Possible habitability with strong greenhouse warming."
+    elif 230 <= temp < 260:
+        zone = "🌍 Cold Habitable Zone"
+        color = "cyan"
+        description = "Possible habitability if greenhouse warming exists."
 
-         elif 260 <= temp < 300:
-            zone = "🌍 Temperate Habitable Zone"
-            color = "green"
-            description = "Best range for Earth-like equilibrium conditions."
+    elif 260 <= temp < 300:
+        zone = "🌍 Temperate Habitable Zone"
+        color = "green"
+        description = "Best range for Earth-like equilibrium conditions."
 
-         elif 300 <= temp < 340:
-            zone = "🔥 Moist Greenhouse Risk Zone"
-            color = "orange"
-            description = "Water vapor feedback may begin."
+    elif 300 <= temp < 340:
+        zone = "🔥 Moist Greenhouse Risk Zone"
+        color = "orange"
+        description = "Water vapor feedback may begin."
 
-          else:
-           zone = "☠️ Moist Greenhouse Zone"
-           color = "red"
-           description = "High risk of water loss."
+    else:
+        zone = "☠️ Moist Greenhouse Zone"
+        color = "red"
+        description = "High risk of water loss and runaway heating."
 
-    # ---------------- Output ONLY INSIDE TAB 1 ----------------
-         st.metric("Stellar Flux", round(flux, 3))
-         st.metric("Equilibrium Temperature (K)", round(temp, 1))
+    # ---------------- OUTPUT (ONLY TAB 1) ----------------
+    st.metric("Stellar Flux", round(flux, 3))
+    st.metric("Equilibrium Temperature (K)", round(temp, 1))
 
-        st.markdown(
-            f"<h2 style='color:{color}'>{zone}</h2>",
-            unsafe_allow_html=True
+    st.markdown(
+        f"<h2 style='color:{color}'>{zone}</h2>",
+        unsafe_allow_html=True
     )
 
-       st.write(description)
+    st.write(description)
 
-       st.progress(min(100, int((temp / 350) * 100)))
+    st.progress(min(100, int((temp / 350) * 100))) 
+    
     # ---------------- TAB 2 ----------------
     with tab2:
         st.header("🧠 Quiz Zone")
