@@ -162,7 +162,7 @@ temp = 278 * ((flux * (1 - albedo)) ** 0.25)
 
     # ---------------- Habitability Zones (physically consistent for equilibrium model) ----------------
     # NOTE: these are for equilibrium temperature (no greenhouse included)
-if temp < 230:
+    if temp < 230:
     zone = "❄️ Frozen Zone"
     color = "blue"
 
@@ -181,8 +181,6 @@ elif 300 <= temp < 340:
 else:
     zone = "☠️ Moist Greenhouse Zone"
     color = "red"
-   
-
     # ---------------- Output ----------------
     st.metric("Stellar Flux", round(flux, 3))
     st.metric("Equilibrium Temperature (K)", round(temp, 1))
