@@ -144,16 +144,13 @@ if mode == "🌟 Basic":
         "🏆 Progress",
         "🥇 Leaderboard"
     ])
-
-    # ---------------- TAB 1 ----------------
     # ---------------- TAB 1 ----------------
     with tab1:
-    st.header("🌍 Create Planet")
-
+      st.header("🌍 Create Planet")
     # ---------------- Inputs ----------------
-    star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
-    distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
-    albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
+      star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
+      distance = st.slider("Distance from star (AU)", 0.1, 3.0, 1.0)
+      albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
 
     # ---------------- Stellar Luminosity ----------------
     L = 1.0 if star_type == "G-Type" else 0.04
