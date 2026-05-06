@@ -409,7 +409,7 @@ with tab1:
 
 
     # ================= TAB 2: SIMULATOR =================
- with tab2:
+with tab2:
         st.header("🌌 planetarium Simulator")
         import streamlit.components.v1 as components
         st.markdown("""
