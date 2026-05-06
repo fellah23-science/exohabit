@@ -154,15 +154,15 @@ if mode == "🌟 Basic":
        albedo = st.slider("Albedo (reflectivity)", 0.0, 1.0, 0.3)
 
     # ---------------- Stellar Model ----------------
-    # G-type ~ Sun, M-type ~ red dwarf (simplified)
-    luminosity = 1.0 if star_type == "G-Type" else 0.04
+      # G-type ~ Sun, M-type ~ red dwarf (simplified)
+       luminosity = 1.0 if star_type == "G-Type" else 0.04
 
     # ---------------- Stellar Flux (Inverse Square Law) ----------------
-    flux = luminosity / (distance ** 2)
+       flux = luminosity / (distance ** 2)
 
     # ---------------- Equilibrium Temperature ----------------
-    # Earth-calibrated radiative equilibrium model
-    temp = 278 * ((flux * (1 - albedo)) ** 0.25)
+     # Earth-calibrated radiative equilibrium model
+       temp = 278 * ((flux * (1 - albedo)) ** 0.25)
 
     # ---------------- Habitability Classification ----------------
     if temp < 230:
