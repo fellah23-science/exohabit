@@ -138,7 +138,7 @@ mode = st.sidebar.radio("Mode", ["🌟 Basic", "🔬 Advanced"])
 
 if mode == "🌟 Basic":
 
-    tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
         "🌍 Create Planet",
         "🧠 Quiz",
         "🏆 Progress",
@@ -147,7 +147,7 @@ if mode == "🌟 Basic":
     
 
 # ================= TAB 1 =================
- with tab1:
+with tab1:
     st.header("🌍 Create Planet")
 
     # ---------------- Inputs ----------------
