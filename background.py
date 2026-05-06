@@ -166,22 +166,22 @@ if mode == "🌟 Basic":
            color = "blue"
            description = "Surface likely frozen. Liquid water is unlikely."
 
-      elif 230 <= temp < 260:
+         elif 230 <= temp < 260:
             zone = "🌍 Cold Habitable Zone"
             color = "cyan"
             description = "Possible habitability with strong greenhouse warming."
 
-     elif 260 <= temp < 300:
+         elif 260 <= temp < 300:
             zone = "🌍 Temperate Habitable Zone"
             color = "green"
             description = "Best range for Earth-like equilibrium conditions."
 
-     elif 300 <= temp < 340:
+         elif 300 <= temp < 340:
             zone = "🔥 Moist Greenhouse Risk Zone"
             color = "orange"
             description = "Water vapor feedback may begin."
 
-     else:
+          else:
            zone = "☠️ Moist Greenhouse Zone"
            color = "red"
            description = "High risk of water loss."
