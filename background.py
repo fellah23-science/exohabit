@@ -152,46 +152,36 @@ if mode == "🌟 Basic":
         distance = st.slider("Distance (AU)", 0.1, 3.0, 1.0)
         albedo = st.slider("Albedo", 0.0, 1.0, 0.3)
 
-    # ---------------- Stellar Luminosity (simplified but realistic scale) ----------------
-    # G-type ~ Sun, M-type ~ red dwarf (reduced luminosity)
-    L = 1.0 if star_type == "G-Type" else 0.04
+L = 1.0 if star_type == "G-Type" else 0.04
 
-    # ---------------- Stellar Flux (inverse square law) ----------------
-    flux = L / (distance ** 2)
+flux = L / (distance ** 2)
 
-    # ---------------- Equilibrium Temperature (Earth-calibrated model) ----------------
-    # 278K is used as Earth-normalization baseline in simplified models
-    temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
+# FIXED temperature model (stable scaling)
+temp = 278 * ((flux * (1 - albedo)) ** 0.25) 
 
 
     # ---------------- Habitability Zones (physically consistent for equilibrium model) ----------------
     # NOTE: these are for equilibrium temperature (no greenhouse included)
+if temp < 230:
+    zone = "❄️ Frozen Zone"
+    color = "blue"
 
-    if temp < 230:
-        zone = "❄️ Frozen Zone"
-        color = "blue"
-        description = "Surface is likely frozen. Liquid water unlikely."
+elif 230 <= temp < 260:
+    zone = "🌍 Cold Habitable Zone"
+    color = "cyan"
 
-    elif 230 <= temp < 260:
-        zone = "🌍 Cold Habitable Zone"
-        color = "cyan"
-        description = "Potential habitability with strong greenhouse warming required."
+elif 260 <= temp < 300:
+    zone = "🌍 Temperate Habitable Zone"
+    color = "green"
 
-    elif 260 <= temp < 300:
-        zone = "🌍 Temperate Habitable Zone"
-        color = "green"
-        description = "Most Earth-like equilibrium conditions. Best candidate range."
+elif 300 <= temp < 340:
+    zone = "🔥 Moist Greenhouse Risk Zone"
+    color = "orange"
 
-    elif 300 <= temp < 340:
-        zone = "🔥 Hot / Moist Greenhouse Risk Zone"
-        color = "orange"
-        description = "Strong water vapor feedback possible. Atmospheric instability increasing."
-
-    else:
-        zone = "☠️ Moist Greenhouse Zone"
-        color = "red"
-        description = "High risk of long-term water loss and uninhabitable conditions."
-
+else:
+    zone = "☠️ Moist Greenhouse Zone"
+    color = "red"
+   
 
     # ---------------- Output ----------------
     st.metric("Stellar Flux", round(flux, 3))
