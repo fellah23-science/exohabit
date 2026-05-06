@@ -146,7 +146,7 @@ if mode == "🌟 Basic":
     ])
    # ================= TAB 1 =================
    with tab1:
-    st.header("🌍 Create Planet")
+       st.header("🌍 Create Planet")
 
     # ---------------- Inputs ----------------
     star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
