@@ -135,10 +135,9 @@ mode = st.sidebar.radio("Mode", ["🌟 Basic", "🔬 Advanced"])
 # =====================================================
 # 🌟 BASIC MODE (FULL)
 # =====================================================
-
 if mode == "🌟 Basic":
 
-tab1, tab2, tab3, tab4 = st.tabs([
+   tab1, tab2, tab3, tab4 = st.tabs([
         "🌍 Create Planet",
         "🧠 Quiz",
         "🏆 Progress",
@@ -364,7 +363,7 @@ if mode == "🔬 Advanced":
     ])
 
     # ================= TAB 1: PLANET CARDS =================
-    with tab1:
+with tab1:
         st.header("🪐 Exoplanet Cards")
 
         planets = [
@@ -410,7 +409,7 @@ if mode == "🔬 Advanced":
 
 
     # ================= TAB 2: SIMULATOR =================
-    with tab2:
+ with tab2:
         st.header("🌌 planetarium Simulator")
         import streamlit.components.v1 as components
         st.markdown("""
@@ -722,8 +721,8 @@ if mode == "🔬 Advanced":
 
        
 
-    # ================= TAB 3: CALCULATOR =================
-    with tab3:
+    # ================= TAB 3: CALCULATOR ================
+with tab3:
         st.header("🔥 Habitability Calculator")
 
         star = st.selectbox("Star Type", ["G-Type", "M-Type"])
