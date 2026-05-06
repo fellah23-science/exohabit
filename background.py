@@ -147,7 +147,7 @@ if mode == "🌟 Basic":
     
 
 # ================= TAB 1 =================
-with tab1:
+ with tab1:
     st.header("🌍 Create Planet")
 
     # ---------------- Inputs ----------------
