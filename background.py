@@ -197,7 +197,7 @@ if mode == "🌟 Basic":
 
     st.progress(min(100, int((temp / 350) * 100)))
     # ---------------- TAB 2 ----------------
- with tab2:
+    with tab2:
         st.header("🧠 Quiz Zone")
 
         quiz_data = {
