@@ -148,21 +148,56 @@ if mode == "🌟 Basic":
     # ---------------- TAB 1 ----------------
     with tab1:
         st.header("🌍 Create Planet")
-
         star_type = st.selectbox("Star Type", ["G-Type", "M-Type"])
         distance = st.slider("Distance (AU)", 0.1, 3.0, 1.0)
         albedo = st.slider("Albedo", 0.0, 1.0, 0.3)
 
-        L = 1.0 if star_type == "G-Type" else 0.04
-        flux = L / (distance ** 2)
-        temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
+    # ---------------- Stellar Luminosity (simplified model) ----------------
+    L = 1.0 if star_type == "G-Type" else 0.04
 
-        score = int(max(0, min(100, 100 - abs(temp - 288))))
+    # ---------------- Stellar Flux ----------------
+    flux = L / (distance ** 2)
 
-        st.metric("Flux", round(flux, 2))
-        st.metric("Temp", round(temp, 1))
-        st.metric("Score", score)
-        st.progress(score)
+    # ---------------- Equilibrium Temperature ----------------
+    temp = ((flux * (1 - albedo)) / 4) ** 0.25 * 278
+
+
+    # ---------------- Habitability Zones ----------------
+    if temp < 240:
+        zone = "❄️ Frozen Zone"
+        color = "blue"
+        description = "Surface likely frozen. Liquid water unlikely."
+
+    elif 240 <= temp < 310:
+        zone = "🌍 Habitable Zone"
+        color = "green"
+        description = "Conditions may allow liquid water (depends on atmosphere)."
+
+    elif 310 <= temp < 340:
+        zone = "🔥 Moist Greenhouse Risk Zone"
+        color = "orange"
+        description = "Strong water vapor feedback possible. Increasing instability."
+
+    else:
+        zone = "☠️ Moist Greenhouse Zone"
+        color = "red"
+        description = "High risk of long-term water loss due to atmospheric escape."
+
+
+    # ---------------- Output ----------------
+    st.metric("Stellar Flux", round(flux, 2))
+    st.metric("Equilibrium Temperature (K)", round(temp, 1))
+
+    st.markdown(
+        f"<h2 style='color:{color}'>{zone}</h2>",
+        unsafe_allow_html=True
+    )
+
+    st.write(description)
+
+    # Optional visual progress (instead of fake score)
+    st.progress(min(100, int((temp / 400) * 100)))
+       
 
 
     # ---------------- TAB 2 ----------------
